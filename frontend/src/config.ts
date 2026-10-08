@@ -1,20 +1,35 @@
 /**
- * Base pública de MINERIA_DATOS.
- * - Desarrollo: `/md` (proxy de Vite → Apache).
- * - Producción servida por Apache: definir VITE_MD_BASE=/api%20vehiculos%20tutoria/MINERIA_DATOS
+ * Configuración central de la API y recursos estáticos.
+ * 
+ * Configurable mediante variables de entorno:
+ * - VITE_API_URL: URL directa y completa al script api/index.php.
+ * - VITE_API_BASE o VITE_MD_BASE: Prefijo base de la API.
+ *   - En desarrollo: '/md' (utiliza el proxy configurado en vite.config.ts -> Apache).
+ *   - En producción servida por Apache: '/api%20vehiculos%20tutoria/MINERIA_DATOS'.
  */
-export const MD_BASE: string = (import.meta.env.VITE_MD_BASE ?? '/md').replace(/\/$/, '');
+export const API_BASE: string = (
+  import.meta.env.VITE_API_BASE ??
+  import.meta.env.VITE_MD_BASE ??
+  '/md'
+).replace(/\/$/, '');
 
-/** API PHP existente (no se modifica). */
-export const API_ENDPOINT = `${MD_BASE}/api/index.php`;
+export const MD_BASE: string = API_BASE;
+
+/** Endpoint principal de la API PHP existente (no se modifica). */
+export const API_ENDPOINT: string =
+  import.meta.env.VITE_API_URL ?? `${API_BASE}/api/index.php`;
 
 /**
- * Endpoint de autenticación PROPUESTO (brecha B1). Hoy no existe: el frontend lo
- * sondea y, si responde 404, opera en modo "autenticación no disponible".
+ * Endpoint de autenticación PROPUESTO (brecha B1 de Fase 1).
+ * La versión 1 es de un solo usuario; si se agrega en el futuro, no tocará api/index.php.
  */
-export const AUTH_ENDPOINT = `${MD_BASE}/api/auth.php`;
+export const AUTH_ENDPOINT: string =
+  import.meta.env.VITE_AUTH_URL ?? `${API_BASE}/api/auth.php`;
 
-/** Convierte una ruta relativa devuelta por la API (p. ej. `UNIDAD_1/.../x.png?t=1`) en URL servible. */
+/**
+ * Convierte una ruta relativa devuelta por la API (ej: `UNIDAD_1/.../x.png?t=1`)
+ * en una URL servible respetando la base configurada.
+ */
 export function assetUrl(relative: string): string {
   const [path, query] = relative.split('?');
   const encoded = path
@@ -22,8 +37,8 @@ export function assetUrl(relative: string): string {
     .filter(Boolean)
     .map((segment) => encodeURIComponent(decodeURIComponent(segment)))
     .join('/');
-  return `${MD_BASE}/${encoded}${query ? `?${query}` : ''}`;
+  return `${API_BASE}/${encoded}${query ? `?${query}` : ''}`;
 }
 
-/** Ancho a partir del cual se habilita el Modo Mapa. */
+/** Ancho mínimo de ventana a partir del cual se habilita el Modo Mapa. */
 export const MAP_MIN_WIDTH = 1024;
