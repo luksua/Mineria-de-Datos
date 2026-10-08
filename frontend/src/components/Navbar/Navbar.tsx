@@ -7,127 +7,157 @@ import {
   Search,
   FileCode2,
   BookOpen,
-  Map as MapIcon,
-  Award,
-  ChevronDown,
+  Cog,
+  Palette,
 } from 'lucide-react';
-import type { Role } from '../../types/domain';
 
 export const Navbar: React.FC = () => {
-  const { mode, setMode, activeView, setActiveView, user, changeRole, level, xp } = useApp();
+  const { mode, setMode, activeView, setActiveView } = useApp();
 
   const navItems: { view: ActiveView; label: string; icon: React.ReactNode }[] = [
-    { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
-    { view: 'units', label: 'Unidades', icon: <Layers size={18} /> },
-    { view: 'search', label: 'Buscador', icon: <Search size={18} /> },
-    { view: 'latex', label: 'Lab LaTeX', icon: <FileCode2 size={18} /> },
-    { view: 'manual', label: 'Manual', icon: <BookOpen size={18} /> },
+    { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={16} /> },
+    { view: 'units', label: 'Unidades', icon: <Layers size={16} /> },
+    { view: 'search', label: 'Buscador', icon: <Search size={16} /> },
+    { view: 'latex', label: 'Lab LaTeX', icon: <FileCode2 size={16} /> },
+    { view: 'manual', label: 'Manual', icon: <BookOpen size={16} /> },
+    { view: 'uikit', label: 'UI Kit', icon: <Palette size={16} /> },
   ];
 
   return (
     <header
       style={{
-        backgroundColor: 'var(--bg-surface)',
-        borderBottom: '1px solid var(--border-subtle)',
+        backgroundColor: 'var(--color-card)',
+        borderBottom: '1px solid var(--color-border)',
         position: 'sticky',
         top: 0,
         zIndex: 50,
+        boxShadow: 'var(--shadow-atlas-xs)',
       }}
     >
       <div
         style={{
           maxWidth: '1400px',
           margin: '0 auto',
-          padding: '0.75rem 1.5rem',
+          padding: '0.65rem 1.5rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '1rem',
-          flexWrap: 'wrap',
+          gap: '1.25rem',
+          flexWrap: 'nowrap',
+          overflowX: 'auto',
         }}
       >
-        {/* Logotipo / Marca */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        {/* Logotipo / Marca sobria tipo Atlas */}
+        <div
+          onClick={() => setActiveView('dashboard')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.65rem',
+            cursor: 'pointer',
+            flexShrink: 0,
+            userSelect: 'none',
+          }}
+        >
           <div
             style={{
-              width: '36px',
-              height: '36px',
+              width: '32px',
+              height: '32px',
               borderRadius: 'var(--radius-sm)',
-              background: 'linear-gradient(135deg, var(--c-interactive), var(--c-secondary))',
+              backgroundColor: 'var(--color-blue-soft)',
+              border: '1px solid var(--color-blue-border)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#fff',
+              color: 'var(--color-blue-ink)',
             }}
           >
-            <Compass size={22} />
+            <Compass size={18} />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
-              Ruta del Conocimiento
+            <div
+              className="atlas-title"
+              style={{
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                color: 'var(--color-ink)',
+                letterSpacing: '-0.01em',
+                lineHeight: 1.15,
+              }}
+            >
+              La Máquina de Minería
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              Minería de Datos v2
+            <div style={{ fontSize: '0.72rem', color: 'var(--color-ink-secondary)', fontFamily: 'var(--font-sans)' }}>
+              Ruta del Conocimiento
             </div>
           </div>
         </div>
 
-        {/* Selector de Modo (Mapa | Directo) - Regla 3 */}
+        {/* Selector de Modo (La Máquina | Directo) - AGENTS.md §1 & §4 */}
         <div
           style={{
             display: 'flex',
-            backgroundColor: 'var(--bg-deep)',
+            alignItems: 'center',
+            backgroundColor: 'var(--color-card-muted)',
             padding: '3px',
-            borderRadius: 'var(--radius-full)',
-            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-sm)',
+            border: '1px solid var(--color-border)',
+            flexShrink: 0,
           }}
         >
           <button
             type="button"
-            onClick={() => setMode('direct')}
+            onClick={() => setMode('map')}
             style={{
-              padding: '0.35rem 0.85rem',
-              borderRadius: 'var(--radius-full)',
+              padding: '0.3rem 0.75rem',
+              borderRadius: 'var(--radius-sm)',
               border: 'none',
-              fontSize: '0.8rem',
+              fontSize: '0.8125rem',
               fontWeight: 600,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem',
-              backgroundColor: mode === 'direct' ? 'var(--c-interactive)' : 'transparent',
-              color: mode === 'direct' ? '#fff' : 'var(--text-muted)',
-              transition: 'all 0.15s ease',
+              gap: '0.35rem',
+              backgroundColor: mode === 'map' ? 'var(--color-terracotta)' : 'transparent',
+              color: mode === 'map' ? '#FFFFFF' : 'var(--color-ink-secondary)',
+              transition: 'all var(--transition-fast)',
             }}
           >
-            <LayoutDashboard size={14} />
-            Directo
+            <Cog size={13} />
+            <span>La Máquina</span>
           </button>
           <button
             type="button"
-            onClick={() => setMode('map')}
+            onClick={() => setMode('direct')}
             style={{
-              padding: '0.35rem 0.85rem',
-              borderRadius: 'var(--radius-full)',
+              padding: '0.3rem 0.75rem',
+              borderRadius: 'var(--radius-sm)',
               border: 'none',
-              fontSize: '0.8rem',
+              fontSize: '0.8125rem',
               fontWeight: 600,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem',
-              backgroundColor: mode === 'map' ? 'var(--c-interactive)' : 'transparent',
-              color: mode === 'map' ? '#fff' : 'var(--text-muted)',
-              transition: 'all 0.15s ease',
+              gap: '0.35rem',
+              backgroundColor: mode === 'direct' ? 'var(--color-blue-ink)' : 'transparent',
+              color: mode === 'direct' ? '#FFFFFF' : 'var(--color-ink-secondary)',
+              transition: 'all var(--transition-fast)',
             }}
           >
-            <MapIcon size={14} />
-            Mapa RPG
+            <LayoutDashboard size={13} />
+            <span>Directo</span>
           </button>
         </div>
 
-        {/* Navegación Directa */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+        {/* Navegación mínima */}
+        <nav
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            flexShrink: 0,
+          }}
+        >
           {navItems.map((item) => {
             const active = activeView === item.view;
             return (
@@ -138,16 +168,17 @@ export const Navbar: React.FC = () => {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.4rem',
-                  padding: '0.45rem 0.75rem',
+                  gap: '0.35rem',
+                  padding: '0.35rem 0.65rem',
                   borderRadius: 'var(--radius-sm)',
-                  border: 'none',
-                  fontSize: '0.85rem',
+                  border: '1px solid',
+                  borderColor: active ? 'var(--color-border)' : 'transparent',
+                  fontSize: '0.8125rem',
                   fontWeight: active ? 600 : 500,
                   cursor: 'pointer',
-                  backgroundColor: active ? 'var(--c-interactive-bg)' : 'transparent',
-                  color: active ? 'var(--c-interactive-hover)' : 'var(--text-dim)',
-                  transition: 'all 0.15s ease',
+                  backgroundColor: active ? 'var(--color-card-muted)' : 'transparent',
+                  color: active ? 'var(--color-terracotta)' : 'var(--color-ink-secondary)',
+                  transition: 'all var(--transition-fast)',
                 }}
               >
                 {item.icon}
@@ -156,52 +187,6 @@ export const Navbar: React.FC = () => {
             );
           })}
         </nav>
-
-        {/* Gamificación & Rol */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          {/* Insignia de Nivel y Rango */}
-          <div
-            className="badge badge-gold"
-            title={`XP Real: ${xp} | Próximo nivel: ${level.xpSiguienteNivel} XP`}
-            style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
-          >
-            <Award size={14} />
-            <span>Niv. {level.nivel} · {level.rango}</span>
-            <span style={{ opacity: 0.75, marginLeft: '0.2rem' }}>({xp} XP)</span>
-          </div>
-
-          {/* Selector de Rol */}
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-            <select
-              value={user.rol}
-              onChange={(e) => changeRole(e.target.value as Role)}
-              style={{
-                backgroundColor: 'var(--bg-elevated)',
-                color: 'var(--text-main)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '0.35rem 1.75rem 0.35rem 0.65rem',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                appearance: 'none',
-              }}
-            >
-              <option value="estudiante">Rol: Estudiante</option>
-              <option value="docente">Rol: Docente</option>
-              <option value="administrador">Rol: Administrador</option>
-            </select>
-            <ChevronDown
-              size={12}
-              style={{
-                position: 'absolute',
-                right: '0.5rem',
-                pointerEvents: 'none',
-                color: 'var(--text-muted)',
-              }}
-            />
-          </div>
-        </div>
       </div>
     </header>
   );

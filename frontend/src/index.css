@@ -1,51 +1,124 @@
 @import 'katex/dist/katex.min.css';
 
+/* ==========================================================================
+   SISTEMA DE DISEÑO: ATLAS CLARO (AGENTS.md §9)
+   "Ruta del Conocimiento: La Máquina de Minería"
+   Paleta sobria y académica: papel claro, tinta azul, contornos de mapa,
+   acento terracota único. Sin neón ni fondos oscuros.
+   ========================================================================== */
+
 :root {
-  /* Paleta semántica rigurosa (§9) */
-  --bg-deep: #070d17;
-  --bg-main: #0b1524;
-  --bg-surface: #101e33;
-  --bg-elevated: #162742;
-  --bg-highlight: #1d3356;
+  /* 1. Colores de Superficie y Papel */
+  --color-paper: #F6F1E7;            /* Fondo base tipo pliego / mapa */
+  --color-card: #FFFDF8;             /* Fondo de tarjetas, módulos y paneles */
+  --color-card-muted: #F8F4EB;       /* Fondo alternado suave */
+  --color-border: #D9CFBB;           /* Contornos principales tipo mapa */
+  --color-border-light: #EFE8D8;     /* Líneas de rejilla y divisores sutiles */
+  --color-border-dashed: #D9CFBB;    /* Contorno de estados pendientes */
 
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
+  /* 2. Tintas y Tipografía (Contraste AA estricto) */
+  --color-ink: #1F2A3C;              /* Texto principal y trazo de tinta profunda */
+  --color-ink-secondary: #5C5648;    /* Texto secundario, notas al pie, subtítulos */
+  --color-ink-muted: #8C8474;        /* Metadatos terciarios legibles (>= 4.5:1) */
+  --color-ink-disabled: #B8AE98;     /* Elementos desactivados o bloqueados */
 
-  --text-main: #f8fafc;
-  --text-dim: #cbd5e1;
-  --text-muted: #94a3b8;
-  --text-dark: #64748b;
+  /* 3. Colores Semánticos del Atlas */
+  /* Tinta azul = completado, verificado, biblioteca, énfasis editorial */
+  --color-blue-ink: #1F3A5F;
+  --color-blue-ink-hover: #142844;
+  --color-blue-soft: #E4EAF2;        /* Fondo suave para badges y selección */
+  --color-blue-border: #BDD0E4;
 
-  /* Colores con función única: */
-  --c-interactive: #0284c7;  /* Azul eléctrico: interacción, foco, en progreso */
-  --c-interactive-hover: #38bdf8;
-  --c-interactive-bg: rgba(56, 189, 248, 0.1);
+  /* Terracota = tema actual, acción principal, punto de atención */
+  --color-terracotta: #B5532F;
+  --color-terracotta-hover: #984323;
+  --color-terracotta-soft: #FBF0EB;  /* Fondo suave terracota */
+  --color-terracotta-border: #E8BFB0;
 
-  --c-completed: #10b981;    /* Verde: completado, verificado */
-  --c-completed-bg: rgba(16, 185, 129, 0.1);
+  /* Estados de alerta académica */
+  --color-success-ink: #1F3A5F;      /* Siguiendo la regla §9: azul = completado */
+  --color-success-bg: #E4EAF2;
+  --color-pending-ink: #5C5648;      /* Gris cálido */
+  --color-pending-bg: #F4EFE6;
+  --color-blocked-ink: #8C8474;
+  --color-blocked-bg: #EFECE4;
+  --color-danger-ink: #992323;       /* Error sobrio */
+  --color-danger-bg: #FDF2F2;
+  --color-danger-border: #F3C4C4;
 
-  --c-gold: #f59e0b;         /* Dorado: logros, XP, rangos */
-  --c-gold-bg: rgba(245, 158, 11, 0.12);
+  /* 4. Tipografía */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Cinzel', 'EB Garamond', 'Georgia', 'Cambria', serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
 
-  --c-secondary: #8b5cf6;    /* Morado: secundario, proyecto integrador U4 */
-  --c-secondary-bg: rgba(139, 92, 246, 0.1);
+  /* Escala tipográfica (contenido base >= 14px / 0.875rem) */
+  --text-xs: 0.75rem;    /* 12px - solo micro-etiquetas o tags de estado */
+  --text-sm: 0.875rem;   /* 14px - texto compacto pero accesible */
+  --text-base: 1rem;     /* 16px - texto de lectura estándar */
+  --text-lg: 1.125rem;   /* 18px - subtítulos */
+  --text-xl: 1.25rem;    /* 20px - encabezados de tarjeta */
+  --text-2xl: 1.5rem;    /* 24px - títulos de sección */
+  --text-3xl: 1.875rem;  /* 30px - títulos de unidad */
+  --text-4xl: 2.25rem;   /* 36px - título principal */
 
-  --c-danger: #ef4444;       /* Rojo: errores, bloqueos */
-  --c-danger-bg: rgba(239, 68, 68, 0.1);
+  /* 5. Espaciado y Radios */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
 
-  /* Tipografías */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  /* Elevaciones */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-sm: 4px;    /* Esquinas sobrias tipo grabado */
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-full: 9999px;
+
+  /* 6. Sombras y Relieves Suaves (Estilo papel/atlas) */
+  --shadow-atlas-xs: 0 1px 2px rgba(31, 42, 60, 0.05);
+  --shadow-atlas-sm: 0 2px 4px rgba(31, 42, 60, 0.06), 0 1px 2px rgba(31, 42, 60, 0.04);
+  --shadow-atlas-md: 0 4px 8px -1px rgba(31, 42, 60, 0.08), 0 2px 4px -2px rgba(31, 42, 60, 0.04);
+  --shadow-atlas-lg: 0 10px 18px -3px rgba(31, 42, 60, 0.1), 0 4px 6px -4px rgba(31, 42, 60, 0.05);
+
+  /* 7. Movimiento con propósito (§9) */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 360ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Aliases para compatibilidad con vistas existentes durante la transición */
+  --bg-deep: var(--color-paper);
+  --bg-main: var(--color-paper);
+  --bg-surface: var(--color-card);
+  --bg-elevated: var(--color-card-muted);
+  --bg-highlight: var(--color-blue-soft);
+  --border-subtle: var(--color-border-light);
+  --border-strong: var(--color-border);
+  --text-main: var(--color-ink);
+  --text-dim: var(--color-ink-secondary);
+  --text-muted: var(--color-ink-muted);
+  --text-dark: var(--color-ink-disabled);
+  --c-interactive: var(--color-terracotta);
+  --c-interactive-hover: var(--color-terracotta-hover);
+  --c-interactive-bg: var(--color-terracotta-soft);
+  --c-completed: var(--color-blue-ink);
+  --c-completed-bg: var(--color-blue-soft);
+  --c-gold: var(--color-terracotta);
+  --c-gold-bg: var(--color-terracotta-soft);
+  --c-secondary: var(--color-blue-ink);
+  --c-secondary-bg: var(--color-blue-soft);
+  --c-danger: var(--color-danger-ink);
+  --c-danger-bg: var(--color-danger-bg);
+  --shadow-sm: var(--shadow-atlas-sm);
+  --shadow-md: var(--shadow-atlas-md);
+  --shadow-lg: var(--shadow-atlas-lg);
 }
+
+/* ==========================================================================
+   RESET Y REGLAS BASE
+   ========================================================================== */
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -54,11 +127,13 @@
 }
 
 html, body {
-  background-color: var(--bg-deep);
-  color: var(--text-main);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-sans);
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 }
 
@@ -68,126 +143,66 @@ html, body {
   flex-direction: column;
 }
 
-/* Scrollbar estilizado */
+/* Foco visible y accesible (Contraste AA) */
+:focus-visible {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: 2px;
+}
+
+/* Respeto estricto a prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Títulos con toque de atlas */
+.atlas-title {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+
+.atlas-mono {
+  font-family: var(--font-mono);
+}
+
+/* Scrollbar sobrio estilo papel */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-deep);
+  background: var(--color-paper);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-elevated);
-  border-radius: 4px;
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--bg-highlight);
+  background: var(--color-ink-muted);
 }
 
-/* Utilitarios y componentes sobrios */
-.card {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  transition: border-color 0.15s ease;
+/* Utilidades básicas */
+.spin {
+  animation: spin 1s linear infinite;
 }
 
-.card:hover {
-  border-color: var(--border-strong);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: all 0.15s ease;
-  font-family: inherit;
-  text-decoration: none;
-}
-
-.btn-primary {
-  background-color: var(--c-interactive);
-  color: #fff;
-}
-.btn-primary:hover {
-  background-color: var(--c-interactive-hover);
-  color: #070d17;
-}
-
-.btn-secondary {
-  background-color: var(--bg-elevated);
-  color: var(--text-main);
-  border-color: var(--border-subtle);
-}
-.btn-secondary:hover {
-  background-color: var(--bg-highlight);
-  border-color: var(--border-strong);
-}
-
-.btn-gold {
-  background-color: var(--c-gold-bg);
-  color: var(--c-gold);
-  border-color: rgba(245, 158, 11, 0.3);
-}
-.btn-gold:hover {
-  background-color: rgba(245, 158, 11, 0.25);
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .code-block {
   font-family: var(--font-mono);
-  background: #040810;
-  border: 1px solid var(--border-subtle);
+  background: var(--color-card-muted);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 0.75rem;
-  font-size: 0.825rem;
+  padding: 0.85rem 1rem;
+  font-size: var(--text-sm);
+  color: var(--color-ink);
   overflow-x: auto;
-  color: #38bdf8;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.15rem 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: var(--radius-full);
-}
-
-.badge-blue {
-  background-color: var(--c-interactive-bg);
-  color: var(--c-interactive-hover);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-}
-
-.badge-green {
-  background-color: var(--c-completed-bg);
-  color: var(--c-completed);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.badge-gold {
-  background-color: var(--c-gold-bg);
-  color: var(--c-gold);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
-
-.badge-purple {
-  background-color: var(--c-secondary-bg);
-  color: var(--c-secondary);
-  border: 1px solid rgba(139, 92, 246, 0.3);
-}
-
-.badge-gray {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: var(--text-muted);
-  border: 1px solid var(--border-subtle);
 }

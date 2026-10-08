@@ -8,6 +8,7 @@ import { LatexLab } from './components/Latex/LatexLab';
 import { InteractiveManual } from './components/Manual/InteractiveManual';
 import { RPGWorld } from './components/RPG/RPGWorld';
 import { TopicDetailModal } from './components/TopicModal/TopicDetailModal';
+import { UiKitView } from './pages/UiKitView';
 import { AlertCircle, Loader2 } from 'lucide-react';
 
 const MainContent: React.FC = () => {
@@ -26,9 +27,9 @@ const MainContent: React.FC = () => {
           minHeight: '70vh',
         }}
       >
-        <Loader2 size={40} className="spin" style={{ color: 'var(--c-interactive-hover)' }} />
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-          Conectando con la Máquina Virtual de Minería de Datos...
+        <Loader2 size={36} className="spin" style={{ color: 'var(--color-terracotta)' }} />
+        <p style={{ color: 'var(--color-ink-secondary)', fontSize: 'var(--text-sm)', fontFamily: 'var(--font-sans)' }}>
+          Conectando con la Máquina de Minería...
         </p>
       </div>
     );
@@ -38,32 +39,54 @@ const MainContent: React.FC = () => {
     return (
       <div
         style={{
-          maxWidth: '800px',
+          maxWidth: '720px',
           margin: '3rem auto',
           padding: '2rem',
-          backgroundColor: 'var(--c-danger-bg)',
-          border: '1px solid var(--c-danger)',
+          backgroundColor: 'var(--color-danger-bg)',
+          border: '1px solid var(--color-danger-border)',
           borderRadius: 'var(--radius-md)',
           textAlign: 'center',
         }}
       >
-        <AlertCircle size={40} style={{ color: 'var(--c-danger)', margin: '0 auto 1rem' }} />
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+        <AlertCircle size={36} style={{ color: 'var(--color-danger-ink)', margin: '0 auto 1rem' }} />
+        <h3 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--color-danger-ink)', marginBottom: '0.5rem' }}>
           No se pudo conectar con la API PHP
         </h3>
-        <p style={{ color: 'var(--text-dim)', fontSize: '0.875rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+        <p style={{ color: 'var(--color-ink)', fontSize: 'var(--text-sm)', marginBottom: '1.5rem', lineHeight: 1.5 }}>
           {error}
         </p>
-        <button type="button" onClick={() => refreshCourse()} className="btn btn-primary">
+        <button
+          type="button"
+          onClick={() => refreshCourse()}
+          className="btn"
+          style={{
+            backgroundColor: 'var(--color-terracotta)',
+            color: '#FFFFFF',
+            padding: '0.5rem 1.25rem',
+            borderRadius: 'var(--radius-sm)',
+            border: 'none',
+            fontWeight: 600,
+            cursor: 'pointer',
+          }}
+        >
           Reintentar conexión
         </button>
       </div>
     );
   }
 
+  // Si la vista activa es el UI Kit, mostrarla prioritariamente
+  if (activeView === 'uikit') {
+    return (
+      <main style={{ flex: 1, paddingBottom: '3rem' }}>
+        <UiKitView />
+      </main>
+    );
+  }
+
   return (
     <main style={{ flex: 1, paddingBottom: '3rem' }}>
-      {/* Selector de Modo: Modo Mapa RPG vs Modo Directo */}
+      {/* Selector de Modo: La Máquina vs Modo Directo */}
       {mode === 'map' ? (
         <RPGWorld />
       ) : (
@@ -86,7 +109,15 @@ const MainContent: React.FC = () => {
 export default function App() {
   return (
     <AppProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--bg-deep)' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          backgroundColor: 'var(--color-paper)',
+          color: 'var(--color-ink)',
+        }}
+      >
         <Navbar />
         <MainContent />
       </div>

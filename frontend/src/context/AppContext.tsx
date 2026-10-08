@@ -13,7 +13,7 @@ import { MAP_MIN_WIDTH } from '../config';
 
 export type AppMode = 'map' | 'direct';
 
-export type ActiveView = 'dashboard' | 'units' | 'search' | 'latex' | 'manual' | 'profile';
+export type ActiveView = 'dashboard' | 'units' | 'search' | 'latex' | 'manual' | 'profile' | 'uikit';
 
 interface AppContextType {
   mode: AppMode;
@@ -51,7 +51,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return saved === 'map' || saved === 'direct' ? saved : 'direct';
   });
 
-  const [activeView, setActiveView] = useState<ActiveView>('dashboard');
+  const [activeView, setActiveView] = useState<ActiveView>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      if (path === '/ui-kit' || path.endsWith('/ui-kit') || hash === '#ui-kit') {
+        return 'uikit';
+      }
+    }
+    return 'dashboard';
+  });
   const [user, setUser] = useState<SessionUser>({
     id: 'estudiante_01',
     nombre: 'Alex Mendoza',
