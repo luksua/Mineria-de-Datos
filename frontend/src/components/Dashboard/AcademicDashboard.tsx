@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
+import { useCountUp } from '../../hooks/useCountUp';
 import {
   Banner,
   Card,
@@ -26,6 +27,15 @@ export const AcademicDashboard: React.FC = () => {
 
   const m = course?.metricas;
 
+  // Animaciones de recuento numérico suave (useCountUp)
+  const temasCount = useCountUp(m?.totalTemas ?? 24);
+  const busquedasCount = useCountUp(m?.totalBusquedas ?? 360);
+  const docsCount = useCountUp(m?.documentosSeleccionados ?? 100);
+  const scriptsCount = useCountUp(m?.ejemplosR ?? 24);
+  const datasetsCount = useCountUp(m?.datasets ?? 24);
+  const latexCount = useCountUp(m?.documentosLatex ?? 24);
+  const globalPctCount = useCountUp(course?.porcentajeGlobalApi ?? 100);
+
   // Nodos para RoutePath de las 4 unidades
   const unitNodes: RouteNode[] = (course?.unidades || []).map((u, idx) => ({
     id: u.id,
@@ -50,18 +60,19 @@ export const AcademicDashboard: React.FC = () => {
         gap: '2rem',
       }}
     >
-      {/* 1. Banner de Bienvenida Institucional */}
+      {/* 1. Banner de Bienvenida Institucional con Rosa de los Vientos animada */}
       <Banner
         variant="atlas"
+        mostrarBrujula
         titulo="Plataforma de Investigación en Minería de Datos"
         subtitulo="Modo Directo: Acceso estructurado a las 4 unidades académicas, 24 temas, ecuaciones booleanas verificadas, modelos reproducibles en R y artículos científicos en LaTeX."
         icono={<Compass size={24} />}
         metricaPrincipal={{
-          valor: m ? `${m.temasCompletadosApi}/${m.totalTemas}` : '24/24',
+          valor: m ? `${temasCount}/${m.totalTemas}` : '24/24',
           etiqueta: 'Temas Académicos',
         }}
         metricaSecundaria={{
-          valor: `${course?.porcentajeGlobalApi ?? 100}%`,
+          valor: `${globalPctCount}%`,
           etiqueta: 'Progreso del Proyecto',
         }}
       >
@@ -111,7 +122,7 @@ export const AcademicDashboard: React.FC = () => {
           }}
         >
           {/* Temas */}
-          <Card padding="md">
+          <Card padding="md" style={{ animationDelay: '0ms' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <div
                 style={{
@@ -129,7 +140,7 @@ export const AcademicDashboard: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--color-ink)', lineHeight: 1 }}>
-                  {m?.totalTemas ?? 24}
+                  {temasCount}
                 </div>
                 <div style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-ink-secondary)', marginTop: '0.25rem' }}>
                   Temas del Curso
@@ -142,7 +153,7 @@ export const AcademicDashboard: React.FC = () => {
           </Card>
 
           {/* Ecuaciones de Búsqueda con Rotulación Clara */}
-          <Card padding="md">
+          <Card padding="md" style={{ animationDelay: '60ms' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <div
                 style={{
@@ -160,20 +171,20 @@ export const AcademicDashboard: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--color-terracotta)', lineHeight: 1 }}>
-                  {m?.totalBusquedas ?? 105}
+                  {busquedasCount}
                 </div>
                 <div style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-ink-secondary)', marginTop: '0.25rem' }}>
-                  Ecuaciones del Proyecto
+                  Ecuaciones del Proyecto (U1–U4)
                 </div>
               </div>
             </div>
             <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', marginTop: '0.65rem', borderTop: '1px solid var(--color-border-light)', paddingTop: '0.4rem' }}>
-              100 originales canónicas + 5 adicionales (DW)
+              360 en total curricular (100 originales U1 + 5 DW + 255 U2–U4)
             </div>
           </Card>
 
           {/* Documentos Seleccionados */}
-          <Card padding="md">
+          <Card padding="md" style={{ animationDelay: '120ms' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <div
                 style={{
@@ -191,7 +202,7 @@ export const AcademicDashboard: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--color-ink)', lineHeight: 1 }}>
-                  {m?.documentosSeleccionados ?? 100}
+                  {docsCount}
                 </div>
                 <div style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-ink-secondary)', marginTop: '0.25rem' }}>
                   Documentos y DOI
@@ -204,7 +215,7 @@ export const AcademicDashboard: React.FC = () => {
           </Card>
 
           {/* Scripts R */}
-          <Card padding="md">
+          <Card padding="md" style={{ animationDelay: '180ms' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <div
                 style={{
@@ -222,7 +233,7 @@ export const AcademicDashboard: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--color-ink)', lineHeight: 1 }}>
-                  {m?.ejemplosR ?? 24}
+                  {scriptsCount}
                 </div>
                 <div style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-ink-secondary)', marginTop: '0.25rem' }}>
                   Scripts en R
@@ -235,7 +246,7 @@ export const AcademicDashboard: React.FC = () => {
           </Card>
 
           {/* Datasets */}
-          <Card padding="md">
+          <Card padding="md" style={{ animationDelay: '240ms' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <div
                 style={{
@@ -253,7 +264,7 @@ export const AcademicDashboard: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--color-ink)', lineHeight: 1 }}>
-                  {m?.datasets ?? 24}
+                  {datasetsCount}
                 </div>
                 <div style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-ink-secondary)', marginTop: '0.25rem' }}>
                   Datasets CSV
@@ -266,7 +277,7 @@ export const AcademicDashboard: React.FC = () => {
           </Card>
 
           {/* Documentos LaTeX */}
-          <Card padding="md">
+          <Card padding="md" style={{ animationDelay: '300ms' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <div
                 style={{
@@ -284,7 +295,7 @@ export const AcademicDashboard: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--color-ink)', lineHeight: 1 }}>
-                  {m?.documentosLatex ?? 24}
+                  {latexCount}
                 </div>
                 <div style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-ink-secondary)', marginTop: '0.25rem' }}>
                   Capítulos LaTeX

@@ -34,9 +34,11 @@ export const RoutePath: React.FC<RoutePathProps> = ({
         backgroundColor: 'var(--color-card)',
         border: '1px solid var(--color-border)',
         borderRadius: 'var(--radius-md)',
-        padding: '1.5rem 1rem',
+        padding: '1.75rem 1.25rem 1.5rem',
         boxShadow: 'var(--shadow-atlas-sm)',
         overflowX: 'auto',
+        position: 'relative',
+        boxSizing: 'border-box',
         ...style,
       }}
     >
@@ -45,29 +47,57 @@ export const RoutePath: React.FC<RoutePathProps> = ({
           display: 'flex',
           alignItems: 'flex-start',
           justifyContent: 'space-between',
-          minWidth: `${nodes.length * 150}px`,
+          minWidth: `${Math.max(nodes.length * 140, 560)}px`,
           position: 'relative',
           padding: '0 1rem',
         }}
       >
-        {/* Línea conectora de fondo */}
-        <div
+        {/* Línea SVG conectora detrás de las balizas (nunca toca ni cruza las etiquetas) */}
+        <svg
+          aria-hidden="true"
           style={{
             position: 'absolute',
-            top: '24px',
-            left: '3rem',
-            right: '3rem',
-            height: '2px',
-            backgroundColor: 'var(--color-border-light)',
+            top: '22px', // Centrado exacto vertical con el pin de 44px (radio 22px)
+            left: `calc(100% / (${nodes.length} * 2))`,
+            right: `calc(100% / (${nodes.length} * 2))`,
+            width: `calc(100% - (100% / ${nodes.length}))`,
+            height: '6px',
             zIndex: 1,
+            pointerEvents: 'none',
+            overflow: 'visible',
           }}
-        />
+        >
+          {/* Línea base sutil */}
+          <line
+            x1="0"
+            y1="3"
+            x2="100%"
+            y2="3"
+            stroke="var(--color-border-light)"
+            strokeWidth="2"
+            strokeDasharray="4,4"
+          />
+          {/* Línea trazada con animación stroke-dashoffset */}
+          <line
+            x1="0"
+            y1="3"
+            x2="100%"
+            y2="3"
+            stroke="var(--color-blue-ink)"
+            strokeWidth="2"
+            strokeDasharray="600"
+            strokeDashoffset="600"
+            style={{
+              animation: 'drawRoutePath var(--motion-duration-path) var(--motion-ease-path) forwards',
+            }}
+          />
+        </svg>
 
         {nodes.map((node, index) => {
           const isSelected = activeNodeId === node.id;
-          const isLast = index === nodes.length - 1;
+          const isActual = node.status === 'actual';
 
-          // Colores según estado del atlas
+          // Paleta semántica por estado según AGENTS.md §9
           const nodeColorMap: Record<StatusType, { fill: string; stroke: string; text: string; bg: string }> = {
             completado: {
               fill: 'var(--color-blue-ink)',
@@ -98,108 +128,91 @@ export const RoutePath: React.FC<RoutePathProps> = ({
           const colors = nodeColorMap[node.status];
 
           return (
-            <React.Fragment key={node.id}>
-              {/* Nodo individual */}
+            <div
+              key={node.id}
+              onClick={() => onSelectNode && onSelectNode(node.id)}
+              role={onSelectNode ? 'button' : undefined}
+              tabIndex={onSelectNode ? 0 : undefined}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                zIndex: 2,
+                cursor: onSelectNode ? 'pointer' : 'default',
+                flex: 1,
+                maxWidth: '180px',
+                userSelect: 'none',
+                animation: 'cardEntrance var(--motion-duration-normal) var(--motion-ease-out) both',
+                animationDelay: `${index * 80}ms`,
+              }}
+            >
+              {/* Baliza / Pin del nodo (fondo sólido para tapar la línea de fondo de forma limpia) */}
               <div
-                onClick={() => onSelectNode && onSelectNode(node.id)}
-                role={onSelectNode ? 'button' : undefined}
-                tabIndex={onSelectNode ? 0 : undefined}
                 style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: 'var(--radius-full)',
+                  backgroundColor: colors.bg,
+                  border: `2px ${node.status === 'pendiente' ? 'dashed' : 'solid'} ${colors.stroke}`,
                   display: 'flex',
-                  flexDirection: 'column',
                   alignItems: 'center',
-                  textAlign: 'center',
-                  zIndex: 2,
-                  cursor: onSelectNode ? 'pointer' : 'default',
-                  flex: 1,
-                  maxWidth: '180px',
-                  userSelect: 'none',
+                  justifyContent: 'center',
+                  color: colors.text,
+                  fontWeight: 700,
+                  fontSize: 'var(--text-sm)',
+                  fontFamily: 'var(--font-mono)',
+                  boxShadow: isSelected
+                    ? '0 0 0 3px var(--color-terracotta-soft), var(--shadow-atlas-sm)'
+                    : 'var(--shadow-atlas-xs)',
+                  animation: isActual ? 'pinPulse 2.4s ease-in-out infinite' : undefined,
+                  transition: 'transform var(--transition-fast), border-color var(--transition-fast)',
+                  position: 'relative',
                 }}
               >
-                {/* Pin / Baliza del nodo */}
-                <div
-                  style={{
-                    width: '46px',
-                    height: '46px',
-                    borderRadius: 'var(--radius-full)',
-                    backgroundColor: colors.bg,
-                    border: `2px ${node.status === 'pendiente' ? 'dashed' : 'solid'} ${colors.stroke}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: colors.text,
-                    fontWeight: 700,
-                    fontSize: 'var(--text-sm)',
-                    fontFamily: 'var(--font-mono)',
-                    boxShadow: isSelected
-                      ? '0 0 0 3px var(--color-terracotta-soft), var(--shadow-atlas-sm)'
-                      : 'var(--shadow-atlas-xs)',
-                    transition: 'all var(--transition-fast)',
-                    position: 'relative',
-                  }}
-                >
-                  {node.icon || index + 1}
+                {node.icon || index + 1}
 
-                  {/* Indicador de selección activa */}
-                  {isSelected && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        bottom: '-6px',
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: 'var(--radius-full)',
-                        backgroundColor: 'var(--color-terracotta)',
-                      }}
-                    />
-                  )}
-                </div>
-
-                {/* Etiqueta del nodo */}
-                <div style={{ marginTop: '0.65rem' }}>
+                {/* Marcador de nodo seleccionado */}
+                {isSelected && (
                   <div
                     style={{
-                      fontSize: 'var(--text-xs)',
-                      fontWeight: 700,
-                      color: colors.text,
-                      lineHeight: 1.25,
+                      position: 'absolute',
+                      bottom: '-5px',
+                      width: '7px',
+                      height: '7px',
+                      borderRadius: 'var(--radius-full)',
+                      backgroundColor: 'var(--color-terracotta)',
                     }}
-                  >
-                    {node.label}
-                  </div>
-                  {node.sublabel && (
-                    <div
-                      style={{
-                        fontSize: '11px',
-                        color: 'var(--color-ink-muted)',
-                        marginTop: '0.15rem',
-                      }}
-                    >
-                      {node.sublabel}
-                    </div>
-                  )}
-                </div>
+                  />
+                )}
               </div>
 
-              {/* Segmento de línea conectora intermedia */}
-              {!isLast && (
+              {/* Etiqueta del nodo (siempre debajo del pin, sin superposición de líneas) */}
+              <div style={{ marginTop: '0.65rem', padding: '0 0.25rem' }}>
                 <div
                   style={{
-                    position: 'relative',
-                    flex: 1,
-                    height: '2px',
-                    marginTop: '22px',
-                    zIndex: 1,
-                    backgroundColor:
-                      node.status === 'completado' ? 'var(--color-blue-ink)' : 'transparent',
-                    borderTop:
-                      node.status === 'completado'
-                        ? 'none'
-                        : '2px dashed var(--color-border)',
+                    fontSize: 'var(--text-xs)',
+                    fontWeight: isActual || isSelected ? 800 : 700,
+                    color: colors.text,
+                    lineHeight: 1.25,
                   }}
-                />
-              )}
-            </React.Fragment>
+                >
+                  {node.label}
+                </div>
+                {node.sublabel && (
+                  <div
+                    style={{
+                      fontSize: '11px',
+                      color: 'var(--color-ink-muted)',
+                      marginTop: '0.15rem',
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {node.sublabel}
+                  </div>
+                )}
+              </div>
+            </div>
           );
         })}
       </div>

@@ -66,18 +66,69 @@ El texto de contenido respeta estrictamente el tamaño mínimo de **14 px (0.875
 
 ---
 
-## 4. Radios, Sombras y Movimiento
+## 4. Radios, Sombras y Tokens de Movimiento (Fase 4.5)
 
 - **Radios:**
   - Botones y entradas: `4px` (`--radius-sm`, sobrio, sin redondeos infantiles).
   - Tarjetas y módulos: `8px` (`--radius-md`).
   - Insignias / Pills: `9999px` (`--radius-full`).
 - **Sombras:**
-  - Extremadamente sutiles, simulando relieve de papel: `--shadow-atlas-xs` y `--shadow-atlas-sm`.
-- **Movimiento con propósito:**
-  - Transiciones rápidas: `150ms cubic-bezier(0.4, 0, 0.2, 1)`.
-  - Transiciones normales: `240ms cubic-bezier(0.4, 0, 0.2, 1)`.
-  - Respeto absoluto a `@media (prefers-reduced-motion: reduce)` desactivando animaciones automáticamente.
+  - Extremadamente sutiles, simulando relieve de papel: `--shadow-atlas-xs`, `--shadow-atlas-sm` y `--shadow-atlas-md`.
+
+### 4.1 Tokens de Movimiento Centralizados (`src/index.css`)
+
+Todas las animaciones están estrictamente gobernadas por variables canónicas:
+
+| Token CSS | Valor | Propósito |
+|---|---|---|
+| `--motion-duration-fast` | `150ms` | Micro-interacciones de botones, foco e insignias. |
+| `--motion-duration-normal` | `280ms` | Entrada de tarjetas, tabs y modales. |
+| `--motion-duration-slow` | `600ms` | Trazado de ruta cartográfica SVG (`RoutePath`). |
+| `--motion-duration-drift` | `180s` | Deriva sutilísima de curvas de nivel del fondo topográfico. |
+| `--motion-duration-compass` | `60s` | Giro lento continuo de la rosa de los vientos en el `Banner`. |
+| `--motion-ease-out` | `cubic-bezier(0.16, 1, 0.3, 1)` | Desaceleración suave y natural para transiciones de UI. |
+| `--motion-ease-in-out` | `cubic-bezier(0.4, 0, 0.2, 1)` | Transiciones simétricas de elevación y colores. |
+
+### 4.2 Efectos Cinéticos del Atlas Claro
+
+1. **Fondo Topográfico (`--bg-topographic-pattern`):**
+   Patrón SVG en bucle con curvas de nivel vectoriales a trazo ultra-tenue (`#D9CFBB` al 28% de opacidad). Se desplaza mediante la animación continua `topographicDrift 180s linear infinite`, transmitiendo la sensación de un pliego cartográfico vivo.
+2. **Camino Cartográfico Vivo (`RoutePath`):**
+   - El sendero SVG que une los nodos se dibuja al cargar con `stroke-dashoffset` (`drawRoutePath var(--motion-duration-slow)`).
+   - Los nodos aparecen en secuencia escalonada (`index * 80ms`).
+   - El nodo actual (`status === 'actual'`) porta un pin terracota con pulso suave de anillo (`pinPulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite`).
+   - El sendero connector vive en una capa SVG intermedia (`top: 22px`, `z-index: 1`) por detrás de los pines (`z-index: 2`), garantizando que las líneas **jamás** se superpongan a los textos de las etiquetas.
+3. **Hook `useCountUp`:**
+   - Ubicado en `src/hooks/useCountUp.ts`.
+   - Anima con `requestAnimationFrame` y curva cubic ease-out hacia el valor exacto de `action=progress`.
+   - Si no hay datos registrados, emite `"Sin datos registrados"`. No inventa valores ni genera números ficticios.
+4. **Elevación Sutil y Entrada Escalonada (`.atlas-card`):**
+   - Entrada con opacidad y desplazamiento vertical de 8 px (`cardEntrance`).
+   - Al pasar el cursor (`:hover`), la tarjeta se eleva `-2px` y activa `--shadow-atlas-md`.
+5. **Banner con Rosa de los Vientos Náutica y Trazo Animado:**
+   - Brújula vectorial de 8 puntas (`CompassRose`) que rota lentamente a 60 segundos por vuelta (`rotateCompass`).
+   - Trazo discontinuo de expedición de fondo (`dashTravel`) animado mediante `stroke-dasharray="6 8"`.
+
+### 4.3 Regla de Oro de Accesibilidad (`prefers-reduced-motion`)
+
+El sistema cumple rigurosamente con WCAG 2.1 AA. Cuando el usuario tiene activa la preferencia de reducción de movimiento en el sistema operativo:
+```css
+@media (prefers-reduced-motion: reduce) {
+  html, body {
+    animation: none !important;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .atlas-card:hover {
+    transform: none !important;
+  }
+}
+```
+En este estado, el fondo queda estático, los caminos aparecen trazados de inmediato, las métricas muestran su cifra final instantáneamente y ningún elemento vibra ni rota.
 
 ---
 

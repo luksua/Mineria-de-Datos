@@ -85,10 +85,24 @@
   --shadow-atlas-md: 0 4px 8px -1px rgba(31, 42, 60, 0.08), 0 2px 4px -2px rgba(31, 42, 60, 0.04);
   --shadow-atlas-lg: 0 10px 18px -3px rgba(31, 42, 60, 0.1), 0 4px 6px -4px rgba(31, 42, 60, 0.05);
 
-  /* 7. Movimiento con propósito (§9) */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 240ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 360ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* 7. Tokens de Movimiento Canónicos (AGENTS.md §9 y Fase 4.5) */
+  --motion-duration-fast: 150ms;
+  --motion-duration-normal: 280ms;
+  --motion-duration-slow: 550ms;
+  --motion-duration-path: 1.2s;
+  --motion-duration-compass: 60s;
+  --motion-duration-drift: 180s;
+
+  --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-ease-path: cubic-bezier(0.25, 1, 0.5, 1);
+
+  --transition-fast: var(--motion-duration-fast) var(--motion-ease-in-out);
+  --transition-normal: var(--motion-duration-normal) var(--motion-ease-in-out);
+  --transition-slow: var(--motion-duration-slow) var(--motion-ease-in-out);
+
+  /* 8. Patrón Topográfico Cartográfico (Curvas de Nivel SVG tenues) */
+  --bg-topographic-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cpath d='M0 60 C80 90, 160 30, 240 70 C280 90, 310 80, 320 75 M0 140 C60 170, 140 110, 220 150 C270 175, 300 160, 320 155 M0 220 C90 260, 180 190, 260 230 C290 245, 310 235, 320 230 M0 300 C70 330, 150 270, 230 310 C270 330, 305 320, 320 315 M40 0 C70 80, 10 160, 50 240 C70 280, 60 310, 55 320 M120 0 C150 70, 90 150, 130 230 C155 280, 140 310, 135 320 M200 0 C240 90, 170 180, 210 260 C230 300, 220 320, 215 320 M280 0 C320 70, 250 150, 290 230 C315 280, 300 310, 295 320' fill='none' stroke='%23D9CFBB' stroke-width='1' stroke-opacity='0.18' stroke-dasharray='4,6'/%3E%3Cpath d='M0 100 C100 130, 200 80, 320 110 M0 180 C110 210, 210 160, 320 190 M0 260 C90 300, 210 240, 320 270 M80 0 C110 100, 70 200, 100 320 M160 0 C190 110, 150 210, 180 320 M240 0 C270 100, 230 220, 260 320' fill='none' stroke='%23B5532F' stroke-width='0.75' stroke-opacity='0.08'/%3E%3C/svg%3E");
 
   /* Aliases para compatibilidad con vistas existentes durante la transición */
   --bg-deep: var(--color-paper);
@@ -130,6 +144,10 @@
 
 html, body {
   background-color: var(--color-paper);
+  background-image: var(--bg-topographic-pattern);
+  background-repeat: repeat;
+  background-size: 320px 320px;
+  animation: topographicDrift var(--motion-duration-drift) linear infinite;
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -151,13 +169,75 @@ html, body {
   outline-offset: 2px;
 }
 
+/* Animaciones canónicas del Atlas */
+@keyframes topographicDrift {
+  from { background-position: 0 0; }
+  to { background-position: 320px 320px; }
+}
+
+@keyframes pinPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(181, 83, 47, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(181, 83, 47, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(181, 83, 47, 0);
+  }
+}
+
+@keyframes rotateCompass {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dashTravel {
+  from { stroke-dashoffset: 120; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes drawRoutePath {
+  from { stroke-dashoffset: 600; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Entrada escalonada y elevación sutil al hover de tarjetas (Fase 4.5) */
+.atlas-card {
+  animation: cardEntrance var(--motion-duration-normal) var(--motion-ease-out) both;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.atlas-card:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-atlas-md);
+  transform: translateY(-2px);
+}
+
 /* Respeto estricto a prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
+  html, body {
+    animation: none !important;
+  }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .atlas-card:hover {
+    transform: none !important;
   }
 }
 

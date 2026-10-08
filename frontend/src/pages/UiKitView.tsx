@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCountUp } from '../hooks/useCountUp';
 import {
   Button,
   Card,
@@ -19,21 +20,25 @@ import {
 import { ESTACIONES_MAQUINA, ENCARGOS_UNIDADES } from '../data/narrativa';
 import {
   Compass,
-  // Layers,
-  // Sparkles,
+  Layers,
+  Sparkles,
   BookOpen,
   Terminal,
   Play,
   RotateCw,
-  // Sliders,
-  // CheckCircle2,
+  Binary,
+  CheckCircle2,
+  Wind,
 } from 'lucide-react';
 
 export const UiKitView: React.FC = () => {
   const [activeTab, setActiveTab] = useState('todos');
-  const [interactiveCounter, setInteractiveCounter] = useState(65);
+  const [interactiveCounter, setInteractiveCounter] = useState(360);
   const [btnLoading, setBtnLoading] = useState(false);
   const [selectedRouteNode, setSelectedRouteNode] = useState('lab');
+
+  // Demostración de useCountUp
+  const animatedNumber = useCountUp(interactiveCounter);
 
   // Nodos de demostración para RoutePath
   const sampleRouteNodes: RouteNode[] = [
@@ -149,6 +154,7 @@ export const UiKitView: React.FC = () => {
           { id: 'maquina', label: 'La Máquina (Estaciones y Piezas)' },
           { id: 'misiones', label: 'Misiones y Ruta' },
           { id: 'datos', label: 'Tablas y Retroalimentación' },
+          { id: 'vida_visual', label: 'Vida Visual (Fase 4.5)' },
         ]}
       />
 
@@ -531,6 +537,162 @@ export const UiKitView: React.FC = () => {
             detalle="Error in read.csv('dataset_privado.csv'): No such file or directory (status code 500)"
             onReintentar={() => alert('Reintentando ejecución en R...')}
           />
+        </section>
+      )}
+
+      {/* SECCIÓN 5: VIDA VISUAL (FASE 4.5) */}
+      {(activeTab === 'todos' || activeTab === 'vida_visual') && (
+        <section style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div>
+            <h3 className="atlas-title" style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>
+              5. Vida Visual del Modo Directo (Fase 4.5)
+            </h3>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-ink-secondary)' }}>
+              Efectos cinéticos sobrios y académicos: fondo topográfico continuo, trazado SVG de caminos, rotación de brújula náutica, conteo numérico con suavizado y elevación al hover.
+            </p>
+          </div>
+
+          {/* 1. Demostración de useCountUp */}
+          <Card
+            header={
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontWeight: 700, fontSize: 'var(--text-sm)' }}>
+                  1. Hook useCountUp (Conteo Suave con Ease-Out Cubic)
+                </span>
+                <StatusBadge status="completado" label="Tokens de Movimiento" size="sm" />
+              </div>
+            }
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-ink-secondary)', margin: 0 }}>
+                Anima progresivamente desde 0 hasta el valor real obtenido por la API. Si el valor es nulo o indefinido, muestra <code>"Sin datos registrados"</code> sin inventar cifras.
+              </p>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2rem',
+                  padding: '1.25rem',
+                  backgroundColor: 'var(--color-paper)',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '1px solid var(--color-border)',
+                  flexWrap: 'wrap',
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
+                    Valor animado en pantalla:
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '3.5rem',
+                      fontWeight: 800,
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--color-terracotta)',
+                      lineHeight: 1,
+                      marginTop: '0.25rem',
+                    }}
+                  >
+                    {animatedNumber}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1, minWidth: '220px' }}>
+                  <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-secondary)', fontWeight: 600 }}>
+                    Probar transiciones con valores reales del proyecto:
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <Button
+                      variant={interactiveCounter === 360 ? 'primary' : 'outline'}
+                      size="sm"
+                      onClick={() => setInteractiveCounter(360)}
+                    >
+                      360 Ecuaciones
+                    </Button>
+                    <Button
+                      variant={interactiveCounter === 105 ? 'primary' : 'outline'}
+                      size="sm"
+                      onClick={() => setInteractiveCounter(105)}
+                    >
+                      105 Ecuaciones U1
+                    </Button>
+                    <Button
+                      variant={interactiveCounter === 100 ? 'primary' : 'outline'}
+                      size="sm"
+                      onClick={() => setInteractiveCounter(100)}
+                    >
+                      100 Documentos
+                    </Button>
+                    <Button
+                      variant={interactiveCounter === 24 ? 'primary' : 'outline'}
+                      size="sm"
+                      onClick={() => setInteractiveCounter(24)}
+                    >
+                      24 Scripts R
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* 2. Banner animado con Rosa de los Vientos y Trazo SVG */}
+          <Card
+            header={
+              <span style={{ fontWeight: 700, fontSize: 'var(--text-sm)' }}>
+                2. Banner Cartográfico: Brújula Náutica SVG (Giro Lento) y Camino de Expedición
+              </span>
+            }
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <Banner
+                variant="atlas"
+                mostrarBrujula
+                titulo="Demostración de Brújula y Cartografía SVG"
+                subtitulo="La rosa de los vientos rota a 60 segundos por ciclo. El trazo de fondo se anima de forma continua mediante stroke-dashoffset."
+                metricaPrincipal={{ valor: '60s', etiqueta: 'Ciclo de Giro' }}
+                metricaSecundaria={{ valor: 'Dash', etiqueta: 'Camino Activo' }}
+              />
+            </div>
+          </Card>
+
+          {/* 3. Elevación sutil de tarjetas y accesibilidad */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
+            <Card
+              header={
+                <span style={{ fontWeight: 700, fontSize: 'var(--text-sm)' }}>
+                  3. Elevación al Hover (.atlas-card:hover)
+                </span>
+              }
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-ink-secondary)', margin: 0 }}>
+                  Pasa el cursor sobre esta tarjeta. Observa la elevación suave de <code>-2px</code> y la sombra <code>--shadow-atlas-md</code>.
+                </p>
+                <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.5rem' }}>
+                  <StatusBadge status="actual" label="Hover Activo: translateY(-2px)" />
+                </div>
+              </div>
+            </Card>
+
+            <Card
+              header={
+                <span style={{ fontWeight: 700, fontSize: 'var(--text-sm)' }}>
+                  4. Respeto a prefers-reduced-motion
+                </span>
+              }
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-ink-secondary)', margin: 0 }}>
+                  Cumplimiento estricto con WCAG AA: cuando el sistema operativo tiene activada la reducción de movimiento, todas las animaciones se desactivan automáticamente a <code>0.01ms</code>, la deriva del fondo se detiene y las métricas aparecen estáticas y completas.
+                </p>
+                <div style={{ marginTop: '0.5rem' }}>
+                  <StatusBadge status="completado" label="@media (prefers-reduced-motion: reduce)" />
+                </div>
+              </div>
+            </Card>
+          </div>
         </section>
       )}
     </div>
