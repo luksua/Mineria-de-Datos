@@ -1,0 +1,43 @@
+Reglas de Asociación Minadas (Soporte Mínimo = 10%, Confianza Mínima = 40%):
+
+>>> ERROR en: c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/UNIDAD_3/05_ASOCIACION_DEPENDENCIA/ejemplos_R/05_asociacion_dependencia.R : columnas no definidas seleccionadas 
+
+------------------------------------------------------------------------
+Ejecutando script: UNIDAD_3/06_VALIDACION_DATOS/ejemplos_R/06_validacion_datos.R 
+------------------------------------------------------------------------
+Validación de datos completada exitosamente.
+>>> Exitoso.
+
+------------------------------------------------------------------------
+Ejecutando script: UNIDAD_3/07_INTEGRACION_PARTICION_DATOS/ejemplos_R/07_integracion_particion.R 
+------------------------------------------------------------------------
+Integración y partición completadas con éxito.
+>>> Exitoso.
+
+------------------------------------------------------------------------
+Ejecutando script: UNIDAD_4/01_SELECCION_BASE_DATOS/ejemplos_R/01_seleccion_base_datos.R 
+------------------------------------------------------------------------
+Etapa 1 de Unidad 4 ejecutada exitosamente.
+>>> Exitoso.
+
+------------------------------------------------------------------------
+Ejecutando script: UNIDAD_4/02_APLICACION_TECNICAS/ejemplos_R/02_benchmark_proyecto.R 
+------------------------------------------------------------------------
+Benchmark de proyecto completado exitosamente.
+>>> Exitoso.
+
+------------------------------------------------------------------------
+Ejecutando script: UNIDAD_4/03_DOCUMENTACION/ejemplos_R/03_documentacion.R 
+------------------------------------------------------------------------
+Etapa 3 de Unidad 4 ejecutada exitosamente.
+>>> Exitoso.
+
+------------------------------------------------------------------------
+Ejecutando script: UNIDAD_4/04_SUSTENTACION_RESULTADOS/ejemplos_R/04_sustentacion_resultados.R 
+------------------------------------------------------------------------
+Etapa 4 de Unidad 4 ejecutada exitosamente.
+>>> Exitoso.
+
+========================================================================
+Todos los scripts ejecutados.
+========================================================================

@@ -1,0 +1,8 @@
+BENCHMARK MULTIMODELO - PROYECTO INTEGRADOR:
+
+               Modelo Exactitud_Test
+1 Regresión Logística             98
+2          Árbol CART             98
+3  Red Neuronal (MLP)             98
+
+Modelo Campeón Seleccionado: Regresión Logística con 98 % de exactitud.

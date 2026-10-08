@@ -1,0 +1,11 @@
+{
+  "nombre": "Pima Indians Diabetes Diagnostic Database",
+  "fuente": "National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK) / UCI",
+  "url": "https://archive.ics.uci.edu/dataset/34/diabetes",
+  "descripcion": "Variables clínicas de mujeres pima mayores de 21 años para predecir diagnóstico de diabetes.",
+  "variables": ["Embarazos", "Glucosa", "Presion", "IMC", "Edad", "Resultado"],
+  "numero_registros": 400,
+  "tipo_datos": "Tabular médico supervisado",
+  "fecha_consulta": "2026-10-06",
+  "licencia": "Dominio Público"
+}

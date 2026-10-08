@@ -1,0 +1,193 @@
+@import 'katex/dist/katex.min.css';
+
+:root {
+  /* Paleta semántica rigurosa (§9) */
+  --bg-deep: #070d17;
+  --bg-main: #0b1524;
+  --bg-surface: #101e33;
+  --bg-elevated: #162742;
+  --bg-highlight: #1d3356;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --text-main: #f8fafc;
+  --text-dim: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-dark: #64748b;
+
+  /* Colores con función única: */
+  --c-interactive: #0284c7;  /* Azul eléctrico: interacción, foco, en progreso */
+  --c-interactive-hover: #38bdf8;
+  --c-interactive-bg: rgba(56, 189, 248, 0.1);
+
+  --c-completed: #10b981;    /* Verde: completado, verificado */
+  --c-completed-bg: rgba(16, 185, 129, 0.1);
+
+  --c-gold: #f59e0b;         /* Dorado: logros, XP, rangos */
+  --c-gold-bg: rgba(245, 158, 11, 0.12);
+
+  --c-secondary: #8b5cf6;    /* Morado: secundario, proyecto integrador U4 */
+  --c-secondary-bg: rgba(139, 92, 246, 0.1);
+
+  --c-danger: #ef4444;       /* Rojo: errores, bloqueos */
+  --c-danger-bg: rgba(239, 68, 68, 0.1);
+
+  /* Tipografías */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Elevaciones */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar estilizado */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-elevated);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-highlight);
+}
+
+/* Utilitarios y componentes sobrios */
+.card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--border-strong);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--c-interactive);
+  color: #fff;
+}
+.btn-primary:hover {
+  background-color: var(--c-interactive-hover);
+  color: #070d17;
+}
+
+.btn-secondary {
+  background-color: var(--bg-elevated);
+  color: var(--text-main);
+  border-color: var(--border-subtle);
+}
+.btn-secondary:hover {
+  background-color: var(--bg-highlight);
+  border-color: var(--border-strong);
+}
+
+.btn-gold {
+  background-color: var(--c-gold-bg);
+  color: var(--c-gold);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.btn-gold:hover {
+  background-color: rgba(245, 158, 11, 0.25);
+}
+
+.code-block {
+  font-family: var(--font-mono);
+  background: #040810;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  font-size: 0.825rem;
+  overflow-x: auto;
+  color: #38bdf8;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+}
+
+.badge-blue {
+  background-color: var(--c-interactive-bg);
+  color: var(--c-interactive-hover);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.badge-green {
+  background-color: var(--c-completed-bg);
+  color: var(--c-completed);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-gold {
+  background-color: var(--c-gold-bg);
+  color: var(--c-gold);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-purple {
+  background-color: var(--c-secondary-bg);
+  color: var(--c-secondary);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.badge-gray {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+}

@@ -1,0 +1,9 @@
+GUÍA DE SUSTENTACIÓN Y DEFENSA DEL PROYECTO:
+
+1. Problema: Deserción estudiantil universitaria en primer año.
+2. Objetivos: Clasificación temprana con >85% de exactitud.
+3. Base de Datos: UCI Higher Education Dropout (500 observaciones).
+4. Metodología: CRISP-DM estructurada en 6 fases.
+5. Técnicas: Benchmark CART vs MLP vs GLM.
+6. Modelo Campeón: Red Neuronal MLP (Exactitud 88.6%, AUC 0.89).
+7. Retorno: Mitigación potencial del 35% del abandono con alertas tempranas.

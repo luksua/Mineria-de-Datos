@@ -1,0 +1,11 @@
+{
+  "nombre": "Data Quality & Anomaly Benchmark Dataset",
+  "fuente": "Simulación controlada para auditoría de calidad de datos y detección de errores",
+  "url": "https://cran.r-project.org/web/packages/editrules/index.html",
+  "descripcion": "Conjunto de datos con anomalías sintomáticas (valores nulos, errores de rango imposibles y outliers multivariados) para pipelines de validación y limpieza.",
+  "variables": ["ID", "Edad_Cruda", "Ingreso_Crudo"],
+  "numero_registros": 300,
+  "tipo_datos": "Tabular continuo ruidoso para preprocesamiento",
+  "fecha_consulta": "2026-10-06",
+  "licencia": "MIT Open License"
+}

@@ -1,0 +1,95 @@
+import React from 'react';
+import { AppProvider, useApp } from './context/AppContext';
+import { Navbar } from './components/Navbar/Navbar';
+import { AcademicDashboard } from './components/Dashboard/AcademicDashboard';
+import { UnitsExplorer } from './components/Units/UnitsExplorer';
+import { SearchEngine } from './components/Search/SearchEngine';
+import { LatexLab } from './components/Latex/LatexLab';
+import { InteractiveManual } from './components/Manual/InteractiveManual';
+import { RPGWorld } from './components/RPG/RPGWorld';
+import { TopicDetailModal } from './components/TopicModal/TopicDetailModal';
+import { AlertCircle, Loader2 } from 'lucide-react';
+
+const MainContent: React.FC = () => {
+  const { mode, activeView, loading, error, refreshCourse } = useApp();
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '1rem',
+          minHeight: '70vh',
+        }}
+      >
+        <Loader2 size={40} className="spin" style={{ color: 'var(--c-interactive-hover)' }} />
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+          Conectando con la Máquina Virtual de Minería de Datos...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        style={{
+          maxWidth: '800px',
+          margin: '3rem auto',
+          padding: '2rem',
+          backgroundColor: 'var(--c-danger-bg)',
+          border: '1px solid var(--c-danger)',
+          borderRadius: 'var(--radius-md)',
+          textAlign: 'center',
+        }}
+      >
+        <AlertCircle size={40} style={{ color: 'var(--c-danger)', margin: '0 auto 1rem' }} />
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+          No se pudo conectar con la API PHP
+        </h3>
+        <p style={{ color: 'var(--text-dim)', fontSize: '0.875rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+          {error}
+        </p>
+        <button type="button" onClick={() => refreshCourse()} className="btn btn-primary">
+          Reintentar conexión
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <main style={{ flex: 1, paddingBottom: '3rem' }}>
+      {/* Selector de Modo: Modo Mapa RPG vs Modo Directo */}
+      {mode === 'map' ? (
+        <RPGWorld />
+      ) : (
+        <>
+          {activeView === 'dashboard' && <AcademicDashboard />}
+          {activeView === 'units' && <UnitsExplorer />}
+          {activeView === 'search' && <SearchEngine />}
+          {activeView === 'latex' && <LatexLab />}
+          {activeView === 'manual' && <InteractiveManual />}
+          {activeView === 'profile' && <AcademicDashboard />}
+        </>
+      )}
+
+      {/* Modal Temático Universal */}
+      <TopicDetailModal />
+    </main>
+  );
+};
+
+export default function App() {
+  return (
+    <AppProvider>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--bg-deep)' }}>
+        <Navbar />
+        <MainContent />
+      </div>
+    </AppProvider>
+  );
+}
