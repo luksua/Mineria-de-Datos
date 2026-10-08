@@ -78,7 +78,7 @@ export const RoutePath: React.FC<RoutePathProps> = ({
             actual: {
               fill: 'var(--color-terracotta)',
               stroke: 'var(--color-terracotta)',
-              text: 'var(--color-terracotta)',
+              text: 'var(--color-terracotta-dark)',
               bg: 'var(--color-terracotta-soft)',
             },
             pendiente: {
@@ -89,7 +89,7 @@ export const RoutePath: React.FC<RoutePathProps> = ({
             },
             bloqueado: {
               fill: 'var(--color-card-muted)',
-              stroke: 'var(--color-ink-disabled)',
+              stroke: 'var(--color-border-disabled)',
               text: 'var(--color-ink-disabled)',
               bg: 'var(--color-paper)',
             },

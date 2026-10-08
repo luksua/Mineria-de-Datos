@@ -122,9 +122,9 @@ export const InteractiveManual: React.FC = () => {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(260px, 320px) 1fr', gap: '1.5rem', alignItems: 'flex-start' }}>
         {/* Navegación Lateral */}
-        <div className="card" style={{ padding: '1rem', backgroundColor: 'var(--bg-surface)' }}>
+        <div className="card" style={{ padding: '1rem', backgroundColor: 'var(--color-card)', border: '1px solid var(--color-border)' }}>
           <div style={{ position: 'relative', marginBottom: '1rem' }}>
-            <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-ink-muted)' }} />
             <input
               type="text"
               value={searchTerm}
@@ -133,10 +133,10 @@ export const InteractiveManual: React.FC = () => {
               style={{
                 width: '100%',
                 padding: '0.45rem 0.75rem 0.45rem 2.2rem',
-                backgroundColor: 'var(--bg-deep)',
-                border: '1px solid var(--border-subtle)',
+                backgroundColor: 'var(--color-card-muted)',
+                border: '1px solid var(--color-border)',
                 borderRadius: 'var(--radius-sm)',
-                color: 'var(--text-main)',
+                color: 'var(--color-ink)',
                 fontSize: '0.8rem',
               }}
             />
@@ -157,9 +157,9 @@ export const InteractiveManual: React.FC = () => {
                     textAlign: 'left',
                     cursor: 'pointer',
                     fontSize: '0.8rem',
-                    fontWeight: isSelected ? 600 : 500,
-                    backgroundColor: isSelected ? 'var(--c-interactive-bg)' : 'transparent',
-                    color: isSelected ? 'var(--c-interactive-hover)' : 'var(--text-dim)',
+                    fontWeight: isSelected ? 700 : 500,
+                    backgroundColor: isSelected ? 'var(--color-blue-soft)' : 'transparent',
+                    color: isSelected ? 'var(--color-blue-ink)' : 'var(--color-ink-secondary)',
                     transition: 'all 0.15s ease',
                   }}
                 >
@@ -171,7 +171,7 @@ export const InteractiveManual: React.FC = () => {
         </div>
 
         {/* Contenido Seleccionado */}
-        <div className="card" style={{ padding: '1.75rem', backgroundColor: 'var(--bg-surface)' }}>
+        <div className="card" style={{ padding: '1.75rem', backgroundColor: 'var(--color-card)', border: '1px solid var(--color-border)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
             <span className="badge badge-purple">{activeContent.categoria}</span>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-main)' }}>

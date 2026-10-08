@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { mode, setMode, activeView, setActiveView } = useApp();
+  const { mode, setMode, activeView, setActiveView, closeTopic, selectedTopic } = useApp();
 
   const navItems: { view: ActiveView; label: string; icon: React.ReactNode }[] = [
     { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={16} /> },
@@ -49,7 +49,10 @@ export const Navbar: React.FC = () => {
       >
         {/* Logotipo / Marca sobria tipo Atlas */}
         <div
-          onClick={() => setActiveView('dashboard')}
+          onClick={() => {
+            closeTopic();
+            setActiveView('dashboard');
+          }}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -159,12 +162,15 @@ export const Navbar: React.FC = () => {
           }}
         >
           {navItems.map((item) => {
-            const active = activeView === item.view;
+            const active = !selectedTopic && activeView === item.view;
             return (
               <button
                 key={item.view}
                 type="button"
-                onClick={() => setActiveView(item.view)}
+                onClick={() => {
+                  closeTopic();
+                  setActiveView(item.view);
+                }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',

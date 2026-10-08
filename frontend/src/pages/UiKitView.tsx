@@ -19,14 +19,14 @@ import {
 import { ESTACIONES_MAQUINA, ENCARGOS_UNIDADES } from '../data/narrativa';
 import {
   Compass,
-  Layers,
-  Sparkles,
+  // Layers,
+  // Sparkles,
   BookOpen,
   Terminal,
   Play,
   RotateCw,
-  Sliders,
-  CheckCircle2,
+  // Sliders,
+  // CheckCircle2,
 } from 'lucide-react';
 
 export const UiKitView: React.FC = () => {
@@ -266,7 +266,6 @@ export const UiKitView: React.FC = () => {
               />
               <ObjectPiece
                 tipo="dataset_script"
-                tipo="dataset_script"
                 titulo="Script R: Clasificación C5.0"
                 subtitulo="tema_1_ejemplo.R"
                 estado="en_proceso"
@@ -287,7 +286,6 @@ export const UiKitView: React.FC = () => {
                 detalles="Pendiente de compilación"
               />
               <ObjectPiece
-                tipo="presentacion"
                 tipo="presentacion"
                 titulo="Material de Sustentación"
                 subtitulo="Defensa ante comité"

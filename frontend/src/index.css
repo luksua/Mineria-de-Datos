@@ -19,8 +19,9 @@
   /* 2. Tintas y Tipografía (Contraste AA estricto) */
   --color-ink: #1F2A3C;              /* Texto principal y trazo de tinta profunda */
   --color-ink-secondary: #5C5648;    /* Texto secundario, notas al pie, subtítulos */
-  --color-ink-muted: #8C8474;        /* Metadatos terciarios legibles (>= 4.5:1) */
-  --color-ink-disabled: #B8AE98;     /* Elementos desactivados o bloqueados */
+  --color-ink-muted: #736C5E;        /* Metadatos terciarios legibles (>= 4.5:1) */
+  --color-ink-disabled: #8C8474;     /* Elementos desactivados o bloqueados con contraste accesible (nunca #B8AE98 para texto) */
+  --color-border-disabled: #B8AE98;  /* Borde o trazo no textual bloqueado */
 
   /* 3. Colores Semánticos del Atlas */
   /* Tinta azul = completado, verificado, biblioteca, énfasis editorial */
@@ -32,6 +33,7 @@
   /* Terracota = tema actual, acción principal, punto de atención */
   --color-terracotta: #B5532F;
   --color-terracotta-hover: #984323;
+  --color-terracotta-dark: #9C4422;  /* Variante oscura para texto pequeño con contraste AA estricto */
   --color-terracotta-soft: #FBF0EB;  /* Fondo suave terracota */
   --color-terracotta-border: #E8BFB0;
 

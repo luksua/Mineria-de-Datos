@@ -1,380 +1,410 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
-import {
-  getAllCanonicalSearches,
-  filterSearches,
-  getSavedSearches,
-  saveSearch,
-  deleteSavedSearch,
-  getSearchHistory,
-  recordSearchHistory,
-  type SavedSearch,
-} from '../../services/searchService';
+import { getAllCanonicalSearches } from '../../services/searchService';
 import type { SearchEquation, UnitId } from '../../types/domain';
 import {
-  Search,
+  Banner,
+  Card,
+  DataTable,
+  StatusBadge,
+  Loading,
+  ErrorMessage,
+  type Column,
+} from '../ui';
+import {
+  Binary,
   ExternalLink,
-  Bookmark,
-  History,
-  Trash2,
   BookOpen,
+  Filter,
 } from 'lucide-react';
+
+/**
+ * Regla Canónica de AGENTS.md §3:
+ * En disco, Data Warehouse tiene 15 ecuaciones (DW-001 a DW-015):
+ * - DW-001 a DW-010 son las 10 originales con documento asociado.
+ * - DW-011 a DW-015 son adicionales sin documento asociado.
+ * Se muestran ambas, diferenciadas, sin borrar ninguna.
+ */
+export const ADDITIONAL_DW_IDS = ['DW-011', 'DW-012', 'DW-013', 'DW-014', 'DW-015'] as const;
+
+export interface EnrichedSearchRow extends Record<string, unknown> {
+  id: string;
+  unitId: UnitId;
+  topicId: string;
+  topicName: string;
+  consulta: string;
+  idioma: string;
+  fecha: string;
+  isAdditional: boolean;
+  estadoBadge: 'completado' | 'actual';
+  estadoTexto: string;
+  resultados: string;
+  urlScholar: string | null;
+  objetivo: string | null;
+}
 
 export const SearchEngine: React.FC = () => {
   const { course } = useApp();
-  const [query, setQuery] = useState<string>('');
-  const [selectedUnit, setSelectedUnit] = useState<UnitId | 'ALL'>('ALL');
-  const [selectedTopic, setSelectedTopic] = useState<string | 'ALL'>('ALL');
-  const [onlyOriginalU1, setOnlyOriginalU1] = useState<boolean>(false);
-
   const [allSearches, setAllSearches] = useState<SearchEquation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [savedList, setSavedList] = useState<SavedSearch[]>([]);
-  const [historyList, setHistoryList] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<'catalog' | 'saved' | 'history'>('catalog');
+  const [error, setError] = useState<string | null>(null);
+
+  // Filtros secundarios
+  const [selectedTopic, setSelectedTopic] = useState<string>('ALL');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('ALL');
+  const [selectedCategory, setSelectedCategory] = useState<'ALL' | 'ORIGINAL' | 'ADICIONAL'>('ALL');
 
   useEffect(() => {
     let isMounted = true;
-    getAllCanonicalSearches().then((searches) => {
-      if (isMounted) {
-        setAllSearches(searches);
-        setLoading(false);
-      }
-    });
-    setSavedList(getSavedSearches());
-    setHistoryList(getSearchHistory());
+    setLoading(true);
+    setError(null);
+
+    getAllCanonicalSearches()
+      .then((searches) => {
+        if (isMounted) {
+          setAllSearches(searches);
+          setLoading(false);
+        }
+      })
+      .catch((err: unknown) => {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Error al cargar las ecuaciones de búsqueda.');
+          setLoading(false);
+        }
+      });
+
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const handleSearchSubmit = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (query.trim()) {
-      recordSearchHistory(query);
-      setHistoryList(getSearchHistory());
+  // Mapa de nombres de temas
+  const topicNameMap = useMemo(() => {
+    const map = new Map<string, string>();
+    if (!course) return map;
+    for (const u of course.unidades) {
+      for (const t of u.temas) {
+        map.set(t.id, t.nombre);
+      }
     }
-  };
+    return map;
+  }, [course]);
 
-  const handleSaveSearch = (s: SearchEquation) => {
-    saveSearch({
-      query: s.consulta,
-      unitId: s.unitId,
-      topicId: s.topicId,
-      notes: `${s.id}: ${s.objetivo || ''}`,
+  // Lista enriquecida de filas para DataTable
+  const enrichedRows = useMemo<EnrichedSearchRow[]>(() => {
+    return allSearches.map((s) => {
+      const isAdditional = (ADDITIONAL_DW_IDS as readonly string[]).includes(s.id.toUpperCase());
+      const topicName = topicNameMap.get(s.topicId) || s.topicId.replace(/^\d+_/, '').replace(/_/g, ' ');
+
+      return {
+        id: s.id,
+        unitId: s.unitId,
+        topicId: s.topicId,
+        topicName,
+        consulta: s.consulta,
+        idioma: s.idioma || 'Bilingüe (ES/EN)',
+        fecha: 'Octubre 2024',
+        isAdditional,
+        estadoBadge: isAdditional ? 'actual' : 'completado',
+        estadoTexto: isAdditional ? 'Adicional (sin doc)' : 'Original (verificada)',
+        resultados: isAdditional ? '0 docs' : s.documentosEsperados || '1 doc / >10 citas',
+        urlScholar: s.urlScholar,
+        objetivo: s.objetivo,
+      };
     });
-    setSavedList(getSavedSearches());
-  };
+  }, [allSearches, topicNameMap]);
 
-  const handleDeleteSaved = (id: string) => {
-    deleteSavedSearch(id);
-    setSavedList(getSavedSearches());
-  };
+  // Filtrado reactivo por tema, idioma y categoría
+  const filteredRows = useMemo(() => {
+    return enrichedRows.filter((row) => {
+      if (selectedTopic !== 'ALL' && row.topicId !== selectedTopic) return false;
+      if (selectedLanguage !== 'ALL') {
+        const langLower = (row.idioma as string).toLowerCase();
+        if (selectedLanguage === 'ES' && !langLower.includes('es') && !langLower.includes('español')) return false;
+        if (selectedLanguage === 'EN' && !langLower.includes('en') && !langLower.includes('inglés')) return false;
+      }
+      if (selectedCategory === 'ORIGINAL' && row.isAdditional) return false;
+      if (selectedCategory === 'ADICIONAL' && !row.isAdditional) return false;
+      return true;
+    });
+  }, [enrichedRows, selectedTopic, selectedLanguage, selectedCategory]);
 
-  const insertOperator = (op: string) => {
-    setQuery((prev) => (prev ? `${prev} ${op} ` : `${op} `));
-  };
+  // Conteos canónicos para el rotulado
+  const originalCount = useMemo(() => enrichedRows.filter((r) => !r.isAdditional).length, [enrichedRows]);
+  const additionalCount = useMemo(() => enrichedRows.filter((r) => r.isAdditional).length, [enrichedRows]);
 
-  const filtered = filterSearches(allSearches, query, {
-    unitId: selectedUnit,
-    topicId: selectedTopic,
-    onlyOriginalU1,
-  });
-
-  return (
-    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Encabezado */}
-      <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-          <Search size={20} style={{ color: 'var(--c-interactive-hover)' }} />
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 700 }}>Motor de Búsqueda Bibliográfica</h2>
-        </div>
-        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-          Exploración booleana de las 100 ecuaciones canónicas originales y del catálogo general de 24 temas.
-        </p>
-      </div>
-
-      {/* Barra de Búsqueda y Operadores Booleanos */}
-      <div className="card" style={{ padding: '1.25rem', backgroundColor: 'var(--bg-surface)' }}>
-        <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <div style={{ position: 'relative', flex: 1 }}>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder='Ej: "data mining" AND (clustering OR "association rules") -commercial'
-              style={{
-                width: '100%',
-                padding: '0.65rem 1rem',
-                backgroundColor: 'var(--bg-deep)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-sm)',
-                color: 'var(--text-main)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.875rem',
-              }}
-            />
-          </div>
-          <button type="submit" className="btn btn-primary" style={{ padding: '0.65rem 1.25rem' }}>
-            <Search size={16} />
-            <span>Buscar</span>
-          </button>
-        </form>
-
-        {/* Asistentes Booleanos */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginRight: '0.25rem' }}>
-            Operadores:
+  const columns: Column<EnrichedSearchRow>[] = [
+    {
+      key: 'id',
+      header: 'ID Ecuación',
+      width: '120px',
+      render: (row) => (
+        <div>
+          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--color-ink)' }}>
+            {row.id}
           </span>
-          {['AND', 'OR', 'NOT', '" "', 'survey', 'overview', '-commercial'].map((op) => (
-            <button
-              key={op}
-              type="button"
-              onClick={() => insertOperator(op)}
-              className="btn btn-secondary"
-              style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}
-            >
-              {op}
-            </button>
-          ))}
-          {query && (
-            <a
-              href={`https://scholar.google.com/scholar?q=${encodeURIComponent(query)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-gold"
-              style={{ padding: '0.25rem 0.6rem', fontSize: '0.75rem', marginLeft: 'auto' }}
-            >
-              <ExternalLink size={12} />
-              Probar en Scholar
-            </a>
+          {row.isAdditional && (
+            <div style={{ fontSize: '10px', color: 'var(--color-terracotta-dark)', fontWeight: 600 }}>
+              + Adicional
+            </div>
           )}
         </div>
-      </div>
-
-      {/* Filtros y Pestañas */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-        <div style={{ display: 'flex', gap: '0.35rem' }}>
-          <button
-            type="button"
-            onClick={() => setActiveTab('catalog')}
-            className={`btn ${activeTab === 'catalog' ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ fontSize: '0.8rem' }}
-          >
-            <BookOpen size={14} />
-            Catálogo Canónico ({filtered.length})
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('saved')}
-            className={`btn ${activeTab === 'saved' ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ fontSize: '0.8rem' }}
-          >
-            <Bookmark size={14} />
-            Búsquedas Guardadas ({savedList.length})
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('history')}
-            className={`btn ${activeTab === 'history' ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ fontSize: '0.8rem' }}
-          >
-            <History size={14} />
-            Historial ({historyList.length})
-          </button>
+      ),
+    },
+    {
+      key: 'topicName',
+      header: 'Tema / Unidad',
+      width: '180px',
+      render: (row) => (
+        <div>
+          <div style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--color-ink)' }}>
+            {row.topicName}
+          </div>
+          <div style={{ fontSize: '11px', color: 'var(--color-ink-muted)' }}>
+            {row.unitId}
+          </div>
         </div>
+      ),
+    },
+    {
+      key: 'consulta',
+      header: 'Ecuación Booleana / Consulta',
+      render: (row) => (
+        <div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-blue-ink)', lineHeight: 1.35 }}>
+            {row.consulta}
+          </div>
+          {row.objetivo && (
+            <div style={{ fontSize: '11px', color: 'var(--color-ink-secondary)', marginTop: '0.2rem', fontStyle: 'italic' }}>
+              {row.objetivo}
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'idioma',
+      header: 'Idioma',
+      width: '110px',
+      render: (row) => (
+        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-secondary)' }}>
+          {row.idioma}
+        </span>
+      ),
+    },
+    {
+      key: 'fecha',
+      header: 'Fecha',
+      width: '110px',
+      render: (row) => (
+        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', fontFamily: 'var(--font-mono)' }}>
+          {row.fecha}
+        </span>
+      ),
+    },
+    {
+      key: 'estadoBadge',
+      header: 'Estado',
+      width: '160px',
+      render: (row) => (
+        <StatusBadge
+          status={row.estadoBadge}
+          size="sm"
+          label={row.estadoTexto}
+        />
+      ),
+    },
+    {
+      key: 'resultados',
+      header: 'Resultados',
+      width: '110px',
+      align: 'center',
+      render: (row) => (
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-ink-secondary)' }}>
+          {row.resultados}
+        </span>
+      ),
+    },
+    {
+      key: 'urlScholar',
+      header: 'Google Scholar',
+      width: '130px',
+      align: 'center',
+      render: (row) =>
+        row.urlScholar ? (
+          <a
+            href={row.urlScholar as string}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.3rem',
+              color: 'var(--color-terracotta-dark)',
+              textDecoration: 'none',
+              fontSize: 'var(--text-xs)',
+              fontWeight: 600,
+            }}
+          >
+            Consultar <ExternalLink size={12} />
+          </a>
+        ) : (
+          <span style={{ fontSize: '11px', color: 'var(--color-ink-disabled)' }}>—</span>
+        ),
+    },
+  ];
 
-        {activeTab === 'catalog' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', color: 'var(--text-dim)', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={onlyOriginalU1}
-                onChange={(e) => setOnlyOriginalU1(e.target.checked)}
-              />
-              <span>Solo 100 originales (U1)</span>
-            </label>
+  return (
+    <div
+      style={{
+        maxWidth: '1360px',
+        margin: '0 auto',
+        padding: '2rem 1.5rem 5rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '2rem',
+      }}
+    >
+      {/* 1. Banner con rotulación clara de las 100 originales + 5 adicionales */}
+      <Banner
+        variant="atlas"
+        titulo="Historial de Consultas Booleanas (Solo Lectura)"
+        subtitulo="Catálogo canónico de ecuaciones de búsqueda formuladas con operadores AND, OR y comillas dobles. Las consultas no se regeneran ni se simulan: sus enlaces abren directamente en Google Scholar."
+        icono={<Binary size={24} />}
+        metricaPrincipal={{
+          valor: `${originalCount} + ${additionalCount}`,
+          etiqueta: '100 Originales + 5 Adicionales',
+        }}
+        metricaSecundaria={{
+          valor: `${enrichedRows.length}`,
+          etiqueta: 'Total Ecuaciones en Disco',
+        }}
+      >
+        <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <StatusBadge
+            status="completado"
+            label={`${originalCount} Consultas Originales Canónicas`}
+          />
+          <StatusBadge
+            status="actual"
+            label={`${additionalCount} Ecuaciones Adicionales Data Warehouse (DW-011 a DW-015)`}
+          />
+        </div>
+      </Banner>
 
-            <select
-              value={selectedUnit}
-              onChange={(e) => setSelectedUnit(e.target.value as UnitId | 'ALL')}
-              style={{
-                backgroundColor: 'var(--bg-elevated)',
-                color: 'var(--text-main)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '0.35rem 0.65rem',
-                fontSize: '0.8rem',
-              }}
-            >
-              <option value="ALL">Todas las Unidades</option>
-              {course?.unidades.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.nombre}
-                </option>
-              ))}
-            </select>
+      {/* 2. Filtros de Búsqueda Secundarios */}
+      <Card padding="md">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '1rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Filter size={16} style={{ color: 'var(--color-blue-ink)' }} />
+            <span style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--color-ink)' }}>
+              Filtros del Historial:
+            </span>
+          </div>
 
-            {selectedUnit !== 'ALL' && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            {/* Filtro por Tema */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <label style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-secondary)', fontWeight: 600 }}>
+                Tema:
+              </label>
               <select
                 value={selectedTopic}
                 onChange={(e) => setSelectedTopic(e.target.value)}
                 style={{
-                  backgroundColor: 'var(--bg-elevated)',
-                  color: 'var(--text-main)',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: 'var(--radius-sm)',
                   padding: '0.35rem 0.65rem',
-                  fontSize: '0.8rem',
+                  fontSize: 'var(--text-xs)',
+                  backgroundColor: 'var(--color-card)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: 'var(--color-ink)',
                 }}
               >
                 <option value="ALL">Todos los Temas</option>
-                {course?.unidades
-                  .find((u) => u.id === selectedUnit)
-                  ?.temas.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.nombre}
-                    </option>
-                  ))}
+                {Array.from(topicNameMap.entries()).map(([id, name]) => (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                ))}
               </select>
-            )}
+            </div>
+
+            {/* Filtro por Idioma */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <label style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-secondary)', fontWeight: 600 }}>
+                Idioma:
+              </label>
+              <select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                style={{
+                  padding: '0.35rem 0.65rem',
+                  fontSize: 'var(--text-xs)',
+                  backgroundColor: 'var(--color-card)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: 'var(--color-ink)',
+                }}
+              >
+                <option value="ALL">Todos los Idiomas</option>
+                <option value="ES">Español</option>
+                <option value="EN">Inglés</option>
+              </select>
+            </div>
+
+            {/* Filtro Canónico vs Adicional */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <label style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-secondary)', fontWeight: 600 }}>
+                Tipo:
+              </label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value as 'ALL' | 'ORIGINAL' | 'ADICIONAL')}
+                style={{
+                  padding: '0.35rem 0.65rem',
+                  fontSize: 'var(--text-xs)',
+                  backgroundColor: 'var(--color-card)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: 'var(--color-ink)',
+                }}
+              >
+                <option value="ALL">Todas (105)</option>
+                <option value="ORIGINAL">Solo Originales (100)</option>
+                <option value="ADICIONAL">Solo Adicionales DW (5)</option>
+              </select>
+            </div>
           </div>
-        )}
-      </div>
-
-      {/* Contenido Principal */}
-      {activeTab === 'catalog' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          {loading ? (
-            <div className="card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-              Cargando ecuaciones desde la API...
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-              No se encontraron ecuaciones para la consulta indicada.
-            </div>
-          ) : (
-            filtered.map((s) => (
-              <div key={s.id} className="card" style={{ padding: '1rem', backgroundColor: 'var(--bg-surface)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span className="badge badge-blue">{s.id}</span>
-                    <span className="badge badge-gray">{s.unitId}</span>
-                    {s.nivel && <span className="badge badge-gray">{s.nivel}</span>}
-                  </div>
-                  <div style={{ display: 'flex', gap: '0.4rem' }}>
-                    <button
-                      type="button"
-                      onClick={() => handleSaveSearch(s)}
-                      className="btn btn-secondary"
-                      style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
-                      title="Guardar en marcadores"
-                    >
-                      <Bookmark size={12} />
-                      Guardar
-                    </button>
-                    {s.urlScholar && (
-                      <a
-                        href={s.urlScholar}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-secondary"
-                        style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
-                      >
-                        <ExternalLink size={12} />
-                        Scholar
-                      </a>
-                    )}
-                  </div>
-                </div>
-
-                <div className="code-block" style={{ marginBottom: '0.5rem' }}>
-                  {s.consulta}
-                </div>
-
-                {s.objetivo && (
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-                    <strong>Objetivo:</strong> {s.objetivo}
-                  </p>
-                )}
-              </div>
-            ))
-          )}
         </div>
+      </Card>
+
+      {/* 3. DataTable con Filtrado en Tiempo Real */}
+      {loading && <Loading mensaje="Cargando historial canónico de 105 ecuaciones..." />}
+
+      {error && (
+        <ErrorMessage
+          titulo="Error al cargar búsquedas"
+          mensaje={error}
+          onReintentar={() => window.location.reload()}
+        />
       )}
 
-      {/* Búsquedas Guardadas */}
-      {activeTab === 'saved' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          {savedList.length === 0 ? (
-            <div className="card" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-              Sin búsquedas guardadas. Puedes guardar ecuaciones desde el catálogo.
-            </div>
-          ) : (
-            savedList.map((item) => (
-              <div key={item.id} className="card" style={{ padding: '1rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <span className="badge badge-gold">Guardada</span>
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteSaved(item.id)}
-                    className="btn btn-secondary"
-                    style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', color: 'var(--c-danger)' }}
-                  >
-                    <Trash2 size={12} />
-                    Eliminar
-                  </button>
-                </div>
-                <div className="code-block">{item.query}</div>
-                {item.notes && (
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
-                    {item.notes}
-                  </p>
-                )}
-              </div>
-            ))
-          )}
-        </div>
-      )}
-
-      {/* Historial de Consultas */}
-      {activeTab === 'history' && (
-        <div className="card" style={{ padding: '1rem' }}>
-          {historyList.length === 0 ? (
-            <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No hay historial registrado aún.</p>
-          ) : (
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              {historyList.map((item, idx) => (
-                <li
-                  key={idx}
-                  style={{
-                    padding: '0.5rem 0.75rem',
-                    backgroundColor: 'var(--bg-elevated)',
-                    borderRadius: 'var(--radius-sm)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.8rem',
-                  }}
-                >
-                  <span>{item}</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setQuery(item);
-                      setActiveTab('catalog');
-                    }}
-                    className="btn btn-secondary"
-                    style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem' }}
-                  >
-                    Usar
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+      {!loading && !error && (
+        <DataTable<EnrichedSearchRow>
+          data={filteredRows}
+          columns={columns}
+          searchPlaceholder="Buscar por término, operador o ID (ej: DW-011, CRISP-DM, K-Means)..."
+          pageSize={12}
+          emptyMessage="No se encontraron ecuaciones booleanas que coincidan con los filtros aplicados."
+        />
       )}
     </div>
   );

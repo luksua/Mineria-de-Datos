@@ -220,10 +220,10 @@ export const LatexLab: React.FC = () => {
             style={{
               width: '100%',
               padding: '0.5rem 0.75rem',
-              backgroundColor: 'var(--bg-deep)',
-              border: '1px solid var(--border-subtle)',
+              backgroundColor: 'var(--color-card)',
+              border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-sm)',
-              color: '#fde047',
+              color: 'var(--color-ink)',
               fontFamily: 'var(--font-mono)',
               fontSize: '0.85rem',
               marginBottom: '0.75rem',
@@ -235,27 +235,29 @@ export const LatexLab: React.FC = () => {
             style={{
               padding: '1.5rem',
               minHeight: '80px',
-              backgroundColor: '#020617',
+              backgroundColor: 'var(--color-card)',
+              border: '1px solid var(--color-border)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               overflowX: 'auto',
+              boxShadow: 'var(--shadow-atlas-xs)',
             }}
           >
             {renderError ? (
-              <div style={{ color: 'var(--c-danger)', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div style={{ color: 'var(--color-danger-ink)', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <AlertCircle size={14} /> {renderError}
               </div>
             ) : (
-              <div ref={previewRef} style={{ fontSize: '1.25rem', color: '#f8fafc' }} />
+              <div ref={previewRef} style={{ fontSize: '1.25rem', color: 'var(--color-ink)' }} />
             )}
           </div>
         </div>
       </div>
 
       {/* Editor de Código .tex */}
-      <div className="card" style={{ padding: '1.25rem' }}>
-        <h4 style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text-muted)' }}>
+      <div className="card" style={{ padding: '1.25rem', backgroundColor: 'var(--color-card)', border: '1px solid var(--color-border)' }}>
+        <h4 style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--color-ink-secondary)' }}>
           Documento Fuente (.tex)
         </h4>
         <textarea
@@ -265,10 +267,10 @@ export const LatexLab: React.FC = () => {
           style={{
             width: '100%',
             padding: '1rem',
-            backgroundColor: '#020617',
-            border: '1px solid var(--border-subtle)',
+            backgroundColor: 'var(--color-card-muted)',
+            border: '1px solid var(--color-border)',
             borderRadius: 'var(--radius-sm)',
-            color: '#93c5fd',
+            color: 'var(--color-ink)',
             fontFamily: 'var(--font-mono)',
             fontSize: '0.825rem',
             lineHeight: 1.5,

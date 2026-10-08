@@ -122,7 +122,7 @@ export const MissionCard: React.FC<MissionCardProps> = ({
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
         {/* Encargo de la misión */}
         <div>
-          <div style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--color-terracotta)', textTransform: 'uppercase' }}>
+          <div style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--color-terracotta-dark)', textTransform: 'uppercase' }}>
             Encargo Académico:
           </div>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-ink-secondary)', marginTop: '0.2rem', margin: 0 }}>

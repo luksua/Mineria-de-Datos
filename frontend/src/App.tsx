@@ -6,13 +6,13 @@ import { UnitsExplorer } from './components/Units/UnitsExplorer';
 import { SearchEngine } from './components/Search/SearchEngine';
 import { LatexLab } from './components/Latex/LatexLab';
 import { InteractiveManual } from './components/Manual/InteractiveManual';
-import { RPGWorld } from './components/RPG/RPGWorld';
-import { TopicDetailModal } from './components/TopicModal/TopicDetailModal';
+import { MachinePlaceholder } from './components/Machine/MachinePlaceholder';
+import { TopicPage } from './pages/TopicPage';
 import { UiKitView } from './pages/UiKitView';
 import { AlertCircle, Loader2 } from 'lucide-react';
 
 const MainContent: React.FC = () => {
-  const { mode, activeView, loading, error, refreshCourse } = useApp();
+  const { mode, activeView, selectedTopic, loading, error, refreshCourse } = useApp();
 
   if (loading) {
     return (
@@ -75,7 +75,16 @@ const MainContent: React.FC = () => {
     );
   }
 
-  // Si la vista activa es el UI Kit, mostrarla prioritariamente
+  // 1. Si hay un tema seleccionado, renderizar como PÁGINA completa con migas de pan (Tarea 3)
+  if (selectedTopic) {
+    return (
+      <main style={{ flex: 1, paddingBottom: '3rem' }}>
+        <TopicPage />
+      </main>
+    );
+  }
+
+  // 2. Si la vista activa es el UI Kit, mostrarla prioritariamente
   if (activeView === 'uikit') {
     return (
       <main style={{ flex: 1, paddingBottom: '3rem' }}>
@@ -88,7 +97,7 @@ const MainContent: React.FC = () => {
     <main style={{ flex: 1, paddingBottom: '3rem' }}>
       {/* Selector de Modo: La Máquina vs Modo Directo */}
       {mode === 'map' ? (
-        <RPGWorld />
+        <MachinePlaceholder />
       ) : (
         <>
           {activeView === 'dashboard' && <AcademicDashboard />}
@@ -99,9 +108,6 @@ const MainContent: React.FC = () => {
           {activeView === 'profile' && <AcademicDashboard />}
         </>
       )}
-
-      {/* Modal Temático Universal */}
-      <TopicDetailModal />
     </main>
   );
 };
