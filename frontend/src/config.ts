@@ -37,6 +37,7 @@ export const EXTRA_ENDPOINT: string =
  * en una URL servible respetando la base configurada.
  */
 export function assetUrl(relative: string): string {
+  if (!relative) return '';
   const [path, query] = relative.split('?');
   const encoded = path
     .split('/')

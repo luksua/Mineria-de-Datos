@@ -5,7 +5,7 @@
   "dataset": "iris (Fisher, 1936 / datasets::iris)",
   "dataset_origen": "real_completo",
   "origen_metricas": "calculadas_script",
-  "fecha_ejecucion": "2026-10-08 22:34:37.579387",
+  "fecha_ejecucion": "2026-10-09 00:11:37.662904",
   "archivos_graficos": "grafico_01_mineria_datos.png",
   "metricas": {
     "tecnica": "K-Means Particional",

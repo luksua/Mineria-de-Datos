@@ -40,6 +40,8 @@ export interface MetricsFetchResult {
   displayOutput: string;
 }
 
+import { assetUrl } from '../config';
+
 export async function fetchTopicMetrics(
   unitId: string,
   topicId: string,
@@ -48,7 +50,7 @@ export async function fetchTopicMetrics(
   const cleanTxt = fallbackTxt && fallbackTxt.trim() ? fallbackTxt.trim() : null;
 
   try {
-    const url = `/md/${encodeURIComponent(unitId)}/${encodeURIComponent(topicId)}/resultados/metricas.json?t=${Date.now()}`;
+    const url = assetUrl(`${unitId}/${topicId}/resultados/metricas.json?t=${Date.now()}`);
     const response = await fetch(url);
     if (response.ok) {
       const data: MetricasEstandarJson = await response.json();

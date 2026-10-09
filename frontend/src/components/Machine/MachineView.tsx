@@ -87,7 +87,7 @@ export const MachineView: React.FC = () => {
 
         // Si ya existen imágenes y métricas previas en el tema, prepararlas
         if (detail.results.imagenes && detail.results.imagenes.length > 0) {
-          setRevealedImages(detail.results.imagenes.map((img) => img.url));
+          setRevealedImages(detail.results.imagenes.map((img) => img.src));
         }
         if (detail.results.metricas) {
           fetchTopicMetrics(selectedUnitId, selectedTopicId, detail.results.metricas).then((m) => {
@@ -169,7 +169,7 @@ export const MachineView: React.FC = () => {
 
         // Revelado animado de imágenes y consulta de métricas JSON/TXT
         if (res.results.imagenes && res.results.imagenes.length > 0) {
-          setRevealedImages(res.results.imagenes.map((img) => img.url));
+          setRevealedImages(res.results.imagenes.map((img) => img.src));
         }
 
         const metricsData = await fetchTopicMetrics(selectedUnitId, selectedTopicId, res.results.metricas);
@@ -766,11 +766,13 @@ export const MachineView: React.FC = () => {
                   gap: '1rem',
                 }}
               >
-                {revealedImages.map((imgUrl, idx) => {
-                  const fileName = imgUrl.split('/').pop()?.split('?')[0] || `figura_${idx + 1}.png`;
+                {revealedImages.filter(Boolean).map((imgSrc, idx) => {
+                  const fileName = imgSrc
+                    ? (imgSrc.split('/').pop()?.split('?')[0] || `figura_${idx + 1}.png`)
+                    : `figura_${idx + 1}.png`;
                   return (
                     <div
-                      key={imgUrl}
+                      key={imgSrc}
                       style={{
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
@@ -785,7 +787,7 @@ export const MachineView: React.FC = () => {
                         {fileName}
                       </div>
                       <img
-                        src={`/md/${imgUrl}`}
+                        src={imgSrc}
                         alt={fileName}
                         style={{
                           width: '100%',
