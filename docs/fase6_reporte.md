@@ -55,21 +55,32 @@ Se implementó el **núcleo funcional interactivo de La Máquina de Minería** (
 
 ---
 
-## 3. Verificaciones Realizadas
+## 3. Diagnóstico y Corrección de Incidencia HTTP 403 en Entrega 6A
 
-1. **Compilación TypeScript:**
-   - Comando ejecutado: `cmd.exe /c "cd frontend && npx tsc --noEmit"`.
-   - Resultado: Salida limpia, 0 errores de tipado.
-2. **Servidor y API:**
-   - Servidor Vite activo en `http://localhost:5174/`.
-   - Proxy funcional con Apache XAMPP en el endpoint `api/index.php`.
-   - Acceso a `topic_data`, `run_r` y archivos estáticos verificado.
+Se investigó a fondo el reporte de error HTTP 403 obtenido al cargar el tema U1-01:
+
+1. **Peticiones HTTP de la Estación:**
+   - `topic_data`: `/md/api/index.php?action=topic_data&u=UNIDAD_1&t=01_MINERIA_DE_DATOS` (Proxy Vite) / `http://localhost/api%20vehiculos%20tutoria/MINERIA_DATOS/api/index.php?...` (Apache).
+   - `metricas.json`: `/md/UNIDAD_1/01_MINERIA_DE_DATOS/resultados/metricas.json` / Apache directo.
+   - `grafico.png`: `/md/UNIDAD_1/01_MINERIA_DE_DATOS/resultados/grafico_01_mineria_datos.png` / Apache directo.
+   - `run_r`: `/md/api/index.php?action=run_r` (POST).
+2. **Causa Raíz:**
+   - En el `access.log` de Apache se evidenciaron peticiones con URI malformada (`/api%20vehiculos%20tutoria/MINERIA_DATOShttp://localhost/...`), provocadas por doble concatenación de esquema/host y rutas sin resolver en `MachineView` / `metricsService`.
+   - Apache 2.4 rechaza con `403 Forbidden` cualquier resolución de archivo que contenga esquemas URI en la ruta local.
+   - Adicionalmente, en `MachineView.tsx` las imágenes se intentaban leer desde `img.url` en lugar de `img.src`, causando `TypeError` de split sobre `undefined`.
+3. **Correcciones Aplicadas en Frontend:**
+   - En `config.ts`: se añadió guarda defensiva en `assetUrl`.
+   - En `metricsService.ts`: se unificó la resolución de URL usando `assetUrl`.
+   - En `MachineView.tsx`: se corrigió el acceso a `img.src` y se eliminó la anteposición redundante de `/md/` en la etiqueta de imagen.
+4. **Evidencia de Validación de Punta a Punta (U1-01):**
+   - Carga de tema (`topic_data`): HTTP 200 (`iris_dataset.csv` y `01_mineria_datos.R`).
+   - Ejecución en Laboratorio (`run_r`): HTTP 200, `exit_code: 0`, `status: "success"`.
+   - Archivos generados y comprobados en disco: `grafico_01_mineria_datos.png` (18,541 B), `metricas.json` (906 B, `estado: "ok"`), `metricas_01.txt` (550 B).
+   - Verificación estática: `npx tsc --noEmit` completado con 0 errores.
 
 ---
 
-## 4. Estado para Siguiente Etapa
+## 4. Estado Actual
 
-- **Entrega 6A:** Finalizada y lista para commit.
-- **Entrega 6B (Pendiente de aprobación):**
-  - Implementación detallada de estaciones Terminal, Biblioteca, Escritorio y Pizarra con sus acciones reales.
-  - Pulido fino de animaciones de arrastre y acople.
+- **Entrega 6A:** Diagnóstico completado, incidencia resuelta, pruebas de punta a punta exitosas con evidencia real.
+- **Detenido:** A la espera de aprobación para `npm run build` y Entrega 6B.
