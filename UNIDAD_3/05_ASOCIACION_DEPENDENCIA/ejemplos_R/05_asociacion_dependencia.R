@@ -9,8 +9,8 @@ reglas <- list()
 for (a in nombres) {
   for (b in setdiff(nombres, a)) {
     sop_conjunto <- sum(items[[a]] == 1 & items[[b]] == 1) / n
-    confianza <- sop_conjunto / soporte_individual[a]
-    lift <- confianza / soporte_individual[b]
+    confianza <- unname(sop_conjunto / soporte_individual[a])
+    lift <- unname(confianza / soporte_individual[b])
     if (sop_conjunto >= 0.10 && confianza >= 0.40) {
       reglas[[paste0(a, ' => ', b)]] <- c(Soporte = sop_conjunto, Confianza = confianza, Lift = lift)
     }
@@ -25,11 +25,12 @@ plot(df_reglas$Soporte, df_reglas$Confianza, col = 'purple', pch = 19, cex = df_
 text(df_reglas$Soporte, df_reglas$Confianza, labels = df_reglas$Regla, pos = 3, cex = 0.75)
 grid()
 dev.off()
-sink(file.path(dir_res, 'metricas_05.txt'))
-cat('Reglas de Asociación Minadas (Soporte Mínimo = 10%, Confianza Mínima = 40%):
-
-')
-print(df_reglas[, c('Regla', 'Soporte', 'Confianza', 'Lift')])
-sink()
+tryCatch({
+  sink(file.path(dir_res, 'metricas_05.txt'))
+  cat('Reglas de Asociación Minadas (Soporte Mínimo = 10%, Confianza Mínima = 40%):\n\n')
+  print(df_reglas[, c('Regla', 'Soporte', 'Confianza', 'Lift')])
+}, finally = {
+  while (sink.number() > 0) sink()
+})
 cat('Asociación minada con éxito. Reglas encontradas:', nrow(df_reglas), '
 ')
