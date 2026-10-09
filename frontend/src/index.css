@@ -433,3 +433,40 @@ html, body {
   color: var(--color-ink);
   overflow-x: auto;
 }
+
+/* Animaciones de La Máquina de Minería (Fase 6B) */
+@keyframes stationLightUp {
+  0% {
+    box-shadow: 0 0 0 0 rgba(31, 58, 95, 0.6);
+    transform: scale(0.96);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(31, 58, 95, 0.15);
+    transform: scale(1.04);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(31, 58, 95, 0);
+    transform: scale(1);
+  }
+}
+
+.station-light-up {
+  animation: stationLightUp 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes dockSnap {
+  0% { transform: scale(0.97); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.dock-snap {
+  animation: dockSnap 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.dock-zone-hover {
+  border-color: var(--color-terracotta) !important;
+  background-color: var(--color-terracotta-soft) !important;
+  box-shadow: 0 0 10px rgba(181, 83, 47, 0.25) !important;
+}
+
