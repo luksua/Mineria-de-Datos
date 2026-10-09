@@ -11,19 +11,26 @@
 \end{frame}
 \begin{frame}{1. Problema y Contexto}
 \begin{itemize}
-\item La deserción temprana en primer año genera impactos económicos y sociales negativos.
-\item Objetivo: Predecir oportunamente estudiantes en riesgo para intervención tutorial.
+\item La deserción temprana en primer año genera impactos académicos y de gestión universitaria.
+\item Objetivo: Evaluar si los modelos de minería de datos detectan oportunamente casos de riesgo.
+\item Base de datos: Muestra didáctica de 500 registros con estructura inspirada en UCI \#697; no verificada como submuestra.
+\item Distribución muestral: 5 casos positivos de abandono en 500 registros (1.0\% de prevalencia).
 \end{itemize}
 \end{frame}
 \begin{frame}{2. Benchmark de Modelos en R}
-Se evaluaron tres algoritmos sobre el dataset oficial de UCI:
+Resultados en el conjunto de prueba independiente (150 registros, 3 positivos):
 \begin{itemize}
-\item \textbf{Red Neuronal MLP:} Alta capacidad de frontera no lineal.
-\item \textbf{Árbol CART:} Alta interpretabilidad de reglas de decisión.
-\item \textbf{Regresión Logística:} Calibración probabilística basal.
+\item \textbf{Regresión Logística:} Exactitud 98.00\% | Sensibilidad: 0\%.
+\item \textbf{Árbol CART:} Exactitud 98.00\% | Sensibilidad: 0\%.
+\item \textbf{Red Neuronal MLP:} Exactitud 98.00\% | Sensibilidad: 0\%.
+\item \textbf{Baseline de Clase Mayoritaria:} 98.00\%.
 \end{itemize}
 \end{frame}
-\begin{frame}{3. Conclusiones}
-El sistema predictivo integrado es viable, reproducible y listo para despliegue.
+\begin{frame}{3. Diagnóstico Crítico y Recomendaciones}
+\begin{itemize}
+\item Los tres modelos igualan el baseline trivial de la clase mayoritaria (98.00\%).
+\item Diagnóstico: La regla aprendida clasifica todas las instancias como no abandono ante el desbalance extremo de la muestra didáctica.
+\item Recomendaciones: Aplicar técnicas de balanceo (SMOTE, submuestreo) y evaluar sobre el dataset completo de la fuente oficial.
+\end{itemize}
 \end{frame}
 \end{document}
