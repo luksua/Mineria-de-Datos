@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { ENCARGOS_UNIDADES } from '../../data/narrativa';
+import { getCurriculum } from '../../services/unitService';
 import {
   Card,
   Banner,
@@ -17,12 +18,30 @@ import type { UnitId } from '../../types/domain';
 export const UnitsExplorer: React.FC = () => {
   const { course, openTopic } = useApp();
   const [selectedUnitId, setSelectedUnitId] = useState<UnitId>('UNIDAD_1');
+  const [curriculumMap, setCurriculumMap] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    let mounted = true;
+    getCurriculum().then((unidades) => {
+      if (mounted) {
+        const map: Record<number, string> = {};
+        unidades.forEach((u) => {
+          map[u.numero] = u.pregunta_problema;
+        });
+        setCurriculumMap(map);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   if (!course) return null;
 
   const currentUnit = course.unidades.find((u) => u.id === selectedUnitId) || course.unidades[0];
   const unitNumber = (currentUnit.numero || 1) as 1 | 2 | 3 | 4;
   const encargoData = ENCARGOS_UNIDADES[unitNumber] || ENCARGOS_UNIDADES[1];
+  const preguntaProblema = curriculumMap[unitNumber] || encargoData.preguntaProblema;
 
   // Pestañas de Unidades
   const unitTabs = course.unidades.map((u) => ({
@@ -100,7 +119,7 @@ export const UnitsExplorer: React.FC = () => {
               Pregunta Problema (Encargo Institucional):
             </div>
             <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-ink)', fontStyle: 'italic', lineHeight: 1.45 }}>
-              "{encargoData.preguntaProblema}"
+              "{preguntaProblema}"
             </div>
           </div>
 

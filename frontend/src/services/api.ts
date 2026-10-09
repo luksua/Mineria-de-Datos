@@ -1,4 +1,4 @@
-import { API_ENDPOINT } from '../config';
+import { API_ENDPOINT, EXTRA_ENDPOINT } from '../config';
 
 /** Error HTTP/semántico de la API, con mensaje legible para la UI. */
 export class ApiError extends Error {
@@ -51,6 +51,25 @@ function buildUrl(params: Record<string, string>): string {
 export function apiGet<T>(params: Record<string, string>, options: { cache?: boolean } = {}): Promise<T> {
   const url = buildUrl(params);
   const useCache = options.cache ?? true;
+  if (useCache && getCache.has(url)) return getCache.get(url) as Promise<T>;
+  const promise = request<T>(url);
+  if (useCache) {
+    getCache.set(url, promise);
+    promise.catch(() => getCache.delete(url));
+  }
+  return promise;
+}
+
+function buildExtraUrl(params: Record<string, string>): string {
+  return `${EXTRA_ENDPOINT}?${new URLSearchParams(params).toString()}`;
+}
+
+/** GET a api/extra.php con caché en memoria por URL (desactivada por defecto para metrics y pipeline_step). */
+export function apiExtraGet<T>(params: Record<string, string>, options: { cache?: boolean } = {}): Promise<T> {
+  const url = buildExtraUrl(params);
+  const action = params.action;
+  const defaultCache = !(action === 'metrics' || action === 'pipeline_step');
+  const useCache = options.cache ?? defaultCache;
   if (useCache && getCache.has(url)) return getCache.get(url) as Promise<T>;
   const promise = request<T>(url);
   if (useCache) {

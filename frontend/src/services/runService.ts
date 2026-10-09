@@ -1,4 +1,4 @@
-import { apiPost } from './api';
+import { apiPost, clearApiCache } from './api';
 import type { ApiRunRResponse } from '../types/api';
 import type { RRunResult, UnitId } from '../types/domain';
 import { emptyToNull, mapImages } from './mappers';
@@ -15,8 +15,13 @@ export async function runTopicRScript(unitId: UnitId, topicId: string): Promise<
     { u: unitId, t: topicId }
   );
 
+  const isOk = raw.status === 'success' && raw.exit_code === 0;
+  if (isOk) {
+    clearApiCache();
+  }
+
   return {
-    ok: raw.status === 'success' && raw.exit_code === 0,
+    ok: isOk,
     exitCode: raw.exit_code,
     salida: raw.salida || '',
     results: {

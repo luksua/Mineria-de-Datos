@@ -27,6 +27,12 @@ export const AUTH_ENDPOINT: string =
   import.meta.env.VITE_AUTH_URL ?? `${API_BASE}/api/auth.php`;
 
 /**
+ * Endpoint de la API aditiva (Fase 5+): curriculum, métricas estructuradas, bitácora y validaciones.
+ */
+export const EXTRA_ENDPOINT: string =
+  import.meta.env.VITE_EXTRA_URL ?? `${API_BASE}/api/extra.php`;
+
+/**
  * Convierte una ruta relativa devuelta por la API (ej: `UNIDAD_1/.../x.png?t=1`)
  * en una URL servible respetando la base configurada.
  */
