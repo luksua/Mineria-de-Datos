@@ -123,17 +123,24 @@ modelos_json <- lapply(lista_res, function(r) {
   )
 })
 metricas_json_data <- list(
-  estado = "exitoso",
-  dataset = "higher_education_dropout_sample_500",
+  estado = "ok",
+  tema_id = "U4-02",
+  tipo_tarea = "clasificacion",
+  dataset = "Muestra didáctica de 500 registros con estructura inspirada en UCI #697; no verificada como submuestra",
+  dataset_origen = "tipo_UCI_no_verificado",
+  origen_metricas = "calculadas_script",
+  fecha_ejecucion = as.character(Sys.time()),
   archivos_graficos = c("grafico_02_benchmark_proyecto.png"),
-  n_total = n_total,
-  positivos_total = pos_total,
-  n_test = n_test,
-  positivos_test = pos_test,
   baseline_mayoritaria = baseline_mayoritaria,
   supera_baseline = any(ranking$Supera_Baseline),
+  metricas = list(
+    n_total = n_total,
+    positivos_total = pos_total,
+    n_test = n_test,
+    positivos_test = pos_test
+  ),
   modelos = modelos_json,
-  interpretacion = "Distribución de prueba con 147 casos negativos (98.0%) y 3 casos positivos (2.0%). Ningún modelo supera el baseline trivial de la clase mayoritaria (98.0%) y todos predicen únicamente la clase mayoritaria."
+  interpretacion = "- Distribución de prueba: 147 casos negativos (98.0%) y 3 casos positivos (2.0%).\n- Baseline de clase mayoritaria: 98.00%.\n- Ningún modelo supera el baseline trivial de la clase mayoritaria."
 )
 guardar_metricas_json(metricas_json_data, file.path(dir_res, "metricas.json"))
 

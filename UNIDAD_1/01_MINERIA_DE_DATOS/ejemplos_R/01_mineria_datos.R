@@ -110,16 +110,25 @@ writeLines(c(
 # 7. EXPORTAR MÉTRICAS ESTRUCTURADAS (JSON)
 source("c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/ejemplos_R/utils_json.R")
 metricas_json_data <- list(
-  estado = "exitoso",
-  dataset = "iris",
+  estado = "ok",
+  tema_id = "U1-01",
+  tipo_tarea = "clustering",
+  dataset = "iris (Fisher, 1936 / datasets::iris)",
+  dataset_origen = "real_completo",
+  origen_metricas = "calculadas_script",
+  fecha_ejecucion = as.character(Sys.time()),
   archivos_graficos = c("grafico_01_mineria_datos.png"),
-  tecnica = "K-Means Particional",
-  k_elegido = k_elegido,
-  varianza_explicada = round((modelo_kmeans$betweenss / modelo_kmeans$totss) * 100, 2),
-  coeficiente_silueta = round(sil_promedio, 4),
-  distribucion_cluster = modelo_kmeans$size,
+  metricas = list(
+    tecnica = "K-Means Particional",
+    k_elegido = k_elegido,
+    varianza_explicada = round((modelo_kmeans$betweenss / modelo_kmeans$totss) * 100, 2),
+    coeficiente_silueta = round(sil_promedio, 4),
+    distribucion_cluster = modelo_kmeans$size
+  ),
+  modelos = list(),
+  baseline_mayoritaria = NULL,
   supera_baseline = NULL,
-  interpretacion = "El clúster 1 agrupa individuos con pétalos y sépalos reducidos (típicamente Setosa), perfectamente separable. Los clústeres 2 y 3 representan individuos con morfologías intermedias y grandes, reflejando patrones naturales de diferenciación biológica sin supervisión humana."
+  interpretacion = "- El clúster 1 agrupa individuos con pétalos y sépalos reducidos (típicamente Setosa), perfectamente separable.\n- Los clústeres 2 y 3 representan individuos con morfologías intermedias y grandes, reflejando patrones naturales de diferenciación biológica sin supervisión humana."
 )
 guardar_metricas_json(metricas_json_data, file.path(dir_res, "metricas.json"))
 

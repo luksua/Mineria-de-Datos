@@ -155,21 +155,43 @@ writeLines(c(
 
 # EXPORTAR MÉTRICAS ESTRUCTURADAS (JSON)
 source("c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/ejemplos_R/utils_json.R")
+baseline_u105 <- round(max(table(test_data$Riesgo)) / nrow(test_data) * 100, 2)
+acc_glob_pct <- round(acc_global * 100, 2)
+acc_hib_pct  <- round(acc_hibrido * 100, 2)
+
+modelos_json_u105 <- list(
+  list(
+    modelo = "Árbol CART Global Único",
+    tecnica = "rpart global",
+    exactitud = acc_glob_pct,
+    supera_baseline = acc_glob_pct > baseline_u105
+  ),
+  list(
+    modelo = "Modelo Híbrido Bi-Etapa",
+    tecnica = "K-Means (k=2) + GLM locales",
+    exactitud = acc_hib_pct,
+    supera_baseline = acc_hib_pct > baseline_u105
+  )
+)
+
 metricas_json_data <- list(
-  estado = "exitoso",
-  dataset = "clasificacion_dos_regimenes_simulado",
+  estado = "ok",
+  tema_id = "U1-05",
+  tipo_tarea = "clasificacion",
+  dataset = "Población sintética de 900 casos con dos regímenes ocultos generada en memoria (675 train / 225 test)",
+  dataset_origen = "sintetico",
+  origen_metricas = "calculadas_script",
+  fecha_ejecucion = as.character(Sys.time()),
   archivos_graficos = c("grafico_05_modelos_hibridos.png"),
-  modelo_global = list(
-    tecnica = "Árbol CART Global Único",
-    exactitud = round(acc_global * 100, 2)
+  baseline_mayoritaria = baseline_u105,
+  supera_baseline = acc_hib_pct > baseline_u105,
+  metricas = list(
+    exactitud_global = acc_glob_pct,
+    exactitud_hibrido = acc_hib_pct,
+    mejora_absoluta = round((acc_hibrido - acc_global) * 100, 2)
   ),
-  modelo_hibrido = list(
-    tecnica = "Híbrido K-Means + Estimadores Locales",
-    exactitud = round(acc_hibrido * 100, 2)
-  ),
-  mejora_absoluta = round((acc_hibrido - acc_global) * 100, 2),
-  supera_baseline = round(acc_hibrido, 4) > round(acc_global, 4),
-  interpretacion = "Combina dos paradigmas ontológicos distintos: aprendizaje no supervisado (K-Means) para descomponer la heterogeneidad de la distribución, y aprendizaje supervisado para estimadores locales óptimos."
+  modelos = modelos_json_u105,
+  interpretacion = "1. ¿Por qué es híbrido?: Combina dos paradigmas ontológicos distintos: aprendizaje no supervisado (K-Means) para descomponer la complejidad de la distribución, y aprendizaje supervisado paramétrico (Regresión Logística) para la toma de decisiones local.\n2. Ventaja teórica: Rompe la maldición de la heterogeneidad de datos. Un modelo global único se ve obligado a promediar dinámicas divergentes, mientras que el modelo híbrido entrena estimadores locales óptimos para cada sub-régimen."
 )
 guardar_metricas_json(metricas_json_data, file.path(dir_res, "metricas.json"))
 

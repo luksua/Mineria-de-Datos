@@ -179,31 +179,42 @@ writeLines(c(
 
 # EXPORTAR MÉTRICAS ESTRUCTURADAS (JSON)
 source("c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/ejemplos_R/utils_json.R")
+baseline_u104 <- round(max(table(test_df$Diagnostico)) / nrow(test_df) * 100, 2)
 modelos_json <- lapply(1:nrow(tabla_comparativa), function(i) {
+  acc_pct <- round(tabla_comparativa$Accuracy[i] * 100, 2)
   list(
     modelo = as.character(tabla_comparativa$Modelo[i]),
     accuracy = as.numeric(tabla_comparativa$Accuracy[i]),
     precision = as.numeric(tabla_comparativa$Precision[i]),
     recall_sensibilidad = as.numeric(tabla_comparativa$Recall_Sensibilidad[i]),
     especificidad = as.numeric(tabla_comparativa$Especificidad[i]),
-    f1_score = as.numeric(tabla_comparativa$F1_Score[i])
+    f1_score = as.numeric(tabla_comparativa$F1_Score[i]),
+    supera_baseline = acc_pct > baseline_u104
   )
 })
 metricas_json_data <- list(
-  estado = "exitoso",
-  dataset = "pima_diabetes_simulado",
+  estado = "ok",
+  tema_id = "U1-04",
+  tipo_tarea = "clasificacion",
+  dataset = "Población clínica simulada de 800 casos generada por el script (600 train / 200 test)",
+  dataset_origen = "sintetico",
+  origen_metricas = "calculadas_script",
+  fecha_ejecucion = as.character(Sys.time()),
   archivos_graficos = c("grafico_04_modelos.png"),
-  mejor_modelo_accuracy = list(
-    modelo = as.character(tabla_comparativa$Modelo[which.max(tabla_comparativa$Accuracy)]),
-    accuracy = max(tabla_comparativa$Accuracy)
-  ),
-  mejor_modelo_f1 = list(
-    modelo = as.character(tabla_comparativa$Modelo[which.max(tabla_comparativa$F1_Score)]),
-    f1_score = max(tabla_comparativa$F1_Score)
+  baseline_mayoritaria = baseline_u104,
+  supera_baseline = any(sapply(modelos_json, `[[`, "supera_baseline")),
+  metricas = list(
+    mejor_modelo_accuracy = list(
+      modelo = as.character(tabla_comparativa$Modelo[which.max(tabla_comparativa$Accuracy)]),
+      accuracy = max(tabla_comparativa$Accuracy)
+    ),
+    mejor_modelo_f1 = list(
+      modelo = as.character(tabla_comparativa$Modelo[which.max(tabla_comparativa$F1_Score)]),
+      f1_score = max(tabla_comparativa$F1_Score)
+    )
   ),
   modelos = modelos_json,
-  supera_baseline = NULL,
-  interpretacion = "Regresión Logística y LDA obtienen métricas similares debido a la linealidad subyacente en el espacio logit. El Árbol CART provee alta explicabilidad clínica mediante reglas explícitas de corte en Glucosa y Edad. k-NN ofrece flexibilidad local pero es sensible a la escala dimensional y la elección de k."
+  interpretacion = "- Regresión Logística y LDA obtienen métricas similares debido a la linealidad subyacente en el espacio logit.\n- El Árbol CART provee alta explicabilidad clínica mediante reglas explícitas de corte en Glucosa y Edad.\n- k-NN ofrece flexibilidad local pero es sensible a la escala dimensional y la elección de k."
 )
 guardar_metricas_json(metricas_json_data, file.path(dir_res, "metricas.json"))
 
