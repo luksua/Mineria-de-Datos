@@ -188,8 +188,8 @@ print(servicio_scoring_crisp(antiguedad = 60, saldo = 8500, reclamos = 0, digita
 # ------------------------------------------------------------------------------
 # EXPORTACIÓN DE GRÁFICAS Y DOCUMENTACIÓN
 # ------------------------------------------------------------------------------
-dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/03_CRISP_DM/resultados"
-dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/latex/figuras"
+dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/UNIDAD_1/03_CRISP_DM/resultados"
+dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/latex/figuras"
 
 if (!dir.exists(dir_res)) dir.create(dir_res, recursive = TRUE)
 if (!dir.exists(dir_latex)) dir.create(dir_latex, recursive = TRUE)
@@ -235,8 +235,5 @@ writeLines(c(
   "- 6. Deployment: Función exportable servicio_scoring_crisp() para inferencia en producción."
 ), metricas_txt)
 
-file.copy("c:/xampp/htdocs/api vehiculos tutoria/proyecto/src/ejemplos_r/03_CRISP_DM_run.R",
-          "c:/xampp/htdocs/api vehiculos tutoria/proyecto/03_CRISP_DM/ejemplos_R/03_CRISP_DM.R",
-          overwrite = TRUE)
 
 cat("\n>>> [TEMA 03: CRISP-DM] Ejecución exitosa. Gráfica guardada en:", png_path1, "\n")

@@ -166,8 +166,8 @@ print(resumen_slice)
 # ------------------------------------------------------------------------------
 # 5. EXPORTACIÓN DE TABLAS DEL DATA WAREHOUSE Y GRÁFICAS
 # ------------------------------------------------------------------------------
-dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/07_data_warehouse/resultados"
-dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/latex/figuras"
+dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/UNIDAD_1/07_DATA_WAREHOUSE/resultados"
+dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/latex/figuras"
 
 if (!dir.exists(dir_res)) dir.create(dir_res, recursive = TRUE)
 if (!dir.exists(dir_latex)) dir.create(dir_latex, recursive = TRUE)
@@ -216,9 +216,5 @@ writeLines(c(
   "- Carga: Estructuración del Star Schema relacional libre de dependencias operacionales.",
   "- Capacidades OLAP: Agregación en tiempo real (Roll-Up por trimestre, Drill-Down por categoría, Slice-and-Dice por región)."
 ), metricas_txt)
-
-file.copy("c:/xampp/htdocs/api vehiculos tutoria/proyecto/src/ejemplos_r/07_data_warehouse_run.R",
-          "c:/xampp/htdocs/api vehiculos tutoria/proyecto/07_data_warehouse/ejemplos_R/07_data_warehouse.R",
-          overwrite = TRUE)
 
 cat("\n>>> [TEMA 07: DATA WAREHOUSE] Simulación exitosa. Gráfica guardada en:", png_path1, "\n")

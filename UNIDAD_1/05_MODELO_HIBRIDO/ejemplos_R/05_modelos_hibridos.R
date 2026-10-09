@@ -109,8 +109,8 @@ cat("Diferencia de Rendimiento:", round((acc_hibrido - acc_global) * 100, 2), "p
 # ------------------------------------------------------------------------------
 # GENERACIÓN DE GRÁFICAS COMPARATIVAS
 # ------------------------------------------------------------------------------
-dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/05_modelos_hibridos/resultados"
-dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/latex/figuras"
+dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/UNIDAD_1/05_MODELO_HIBRIDO/resultados"
+dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/latex/figuras"
 
 if (!dir.exists(dir_res)) dir.create(dir_res, recursive = TRUE)
 if (!dir.exists(dir_latex)) dir.create(dir_latex, recursive = TRUE)
@@ -152,9 +152,5 @@ writeLines(c(
   "1. ¿Por qué es híbrido?: Combina dos paradigmas ontológicos distintos: aprendizaje no supervisado (K-Means) para descomponer la complejidad de la distribución, y aprendizaje supervisado paramétrico (Regresión Logística) para la toma de decisiones local.",
   "2. Ventaja teórica: Rompe la maldición de la heterogeneidad de datos. Un modelo global único se ve obligado a promediar dinámicas divergentes, mientras que el modelo híbrido entrena estimadores locales óptimos para cada sub-régimen."
 ), metricas_txt)
-
-file.copy("c:/xampp/htdocs/api vehiculos tutoria/proyecto/src/ejemplos_r/05_modelos_hibridos_run.R",
-          "c:/xampp/htdocs/api vehiculos tutoria/proyecto/05_modelos_hibridos/ejemplos_R/05_modelos_hibridos.R",
-          overwrite = TRUE)
 
 cat("\n>>> [TEMA 05: MODELOS HÍBRIDOS] Ejecución exitosa. Gráfica guardada en:", png_path1, "\n")

@@ -134,8 +134,8 @@ cat("2. Si 'Temp' < 78 grados, la condición atmosférica permanece mayoritariam
 # ------------------------------------------------------------------------------
 # EXPORTACIÓN DE GRÁFICAS Y RESULTADOS
 # ------------------------------------------------------------------------------
-dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/02_KDD/resultados"
-dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/latex/figuras"
+dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/UNIDAD_1/02_KDD/resultados"
+dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/latex/figuras"
 
 if (!dir.exists(dir_res)) dir.create(dir_res, recursive = TRUE)
 if (!dir.exists(dir_latex)) dir.create(dir_latex, recursive = TRUE)
@@ -178,8 +178,5 @@ writeLines(c(
   "- 5. Evaluación e interpretación: Matriz de confusión e inferencia de reglas operativas."
 ), metricas_txt)
 
-file.copy("c:/xampp/htdocs/api vehiculos tutoria/proyecto/src/ejemplos_r/02_KDD_run.R",
-          "c:/xampp/htdocs/api vehiculos tutoria/proyecto/02_KDD/ejemplos_R/02_KDD.R",
-          overwrite = TRUE)
 
 cat("\n>>> [TEMA 02: PROCESO KDD] Ejecución exitosa. Gráfica guardada en:", png_path1, "\n")

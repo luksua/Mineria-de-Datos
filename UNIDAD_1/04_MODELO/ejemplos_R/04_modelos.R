@@ -130,8 +130,8 @@ print(tabla_comparativa)
 # ------------------------------------------------------------------------------
 # GENERACIÓN DE GRÁFICAS COMPARATIVAS
 # ------------------------------------------------------------------------------
-dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/04_modelos/resultados"
-dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/latex/figuras"
+dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/UNIDAD_1/04_MODELO/resultados"
+dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/latex/figuras"
 
 if (!dir.exists(dir_res)) dir.create(dir_res, recursive = TRUE)
 if (!dir.exists(dir_latex)) dir.create(dir_latex, recursive = TRUE)
@@ -176,9 +176,5 @@ writeLines(c(
   "- El Árbol CART provee alta explicabilidad clínica mediante reglas explícitas de corte en Glucosa y Edad.",
   "- k-NN ofrece flexibilidad local pero es sensible a la escala dimensional y la elección de k."
 ), metricas_txt)
-
-file.copy("c:/xampp/htdocs/api vehiculos tutoria/proyecto/src/ejemplos_r/04_modelos_run.R",
-          "c:/xampp/htdocs/api vehiculos tutoria/proyecto/04_modelos/ejemplos_R/04_modelos.R",
-          overwrite = TRUE)
 
 cat("\n>>> [TEMA 04: MODELOS] Ejecución exitosa. Gráfica guardada en:", png_path1, "\n")

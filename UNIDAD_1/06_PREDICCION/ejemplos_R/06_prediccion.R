@@ -61,8 +61,8 @@ cat("RMSE (Root Mean Squared Error):", round(rmse, 2), "pasajeros\n")
 cat("MAPE (Mean Absolute Percentage Error):", round(mape, 2), "%\n")
 
 # 6. GENERACIÓN DE GRÁFICAS DE PREDICCIÓN
-dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/06_prediccion/resultados"
-dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/latex/figuras"
+dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/UNIDAD_1/06_PREDICCION/resultados"
+dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/latex/figuras"
 
 if (!dir.exists(dir_res)) dir.create(dir_res, recursive = TRUE)
 if (!dir.exists(dir_latex)) dir.create(dir_latex, recursive = TRUE)
@@ -119,9 +119,5 @@ writeLines(c(
   "- Un MAPE inferior al 5% demuestra un ajuste predictivo sobresaliente en un horizonte de dos años fuera de muestra.",
   "- Los valores reales se mantienen estrictamente dentro de los intervalos de confianza del 95%, garantizando robustez ante la incertidumbre."
 ), metricas_txt)
-
-file.copy("c:/xampp/htdocs/api vehiculos tutoria/proyecto/src/ejemplos_r/06_prediccion_run.R",
-          "c:/xampp/htdocs/api vehiculos tutoria/proyecto/06_prediccion/ejemplos_R/06_prediccion.R",
-          overwrite = TRUE)
 
 cat("\n>>> [TEMA 06: PREDICCIÓN] Ejecución exitosa. Gráfica guardada en:", png_path1, "\n")

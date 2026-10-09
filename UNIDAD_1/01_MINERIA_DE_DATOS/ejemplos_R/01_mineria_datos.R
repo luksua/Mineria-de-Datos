@@ -58,8 +58,8 @@ cat("\nCentros de los Clústeres (Medias en unidades originales):\n")
 print(centros_originales)
 
 # 5. GENERACIÓN DE GRÁFICAS DE RESULTADOS
-dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/01_mineria_datos/resultados"
-dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/proyecto/latex/figuras"
+dir_res <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/UNIDAD_1/01_MINERIA_DE_DATOS/resultados"
+dir_latex <- "c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/latex/figuras"
 
 if (!dir.exists(dir_res)) dir.create(dir_res, recursive = TRUE)
 if (!dir.exists(dir_latex)) dir.create(dir_latex, recursive = TRUE)
@@ -107,9 +107,5 @@ writeLines(c(
   "- Los clústeres 2 y 3 representan individuos con morfologías intermedias y grandes, reflejando patrones naturales de diferenciación biológica sin supervisión humana."
 ), metricas_txt)
 
-# Copiar script a la carpeta del tema
-file.copy("c:/xampp/htdocs/api vehiculos tutoria/proyecto/src/ejemplos_r/01_mineria_datos_run.R",
-          "c:/xampp/htdocs/api vehiculos tutoria/proyecto/01_mineria_datos/ejemplos_R/01_mineria_datos.R",
-          overwrite = TRUE)
 
 cat(">>> [TEMA 01: MINERÍA DE DATOS] Ejecución completada exitosamente. Gráfica guardada en:", png_path1, "\n")
