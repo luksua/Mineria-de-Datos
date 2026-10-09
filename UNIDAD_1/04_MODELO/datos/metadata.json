@@ -7,5 +7,7 @@
   "numero_registros": 400,
   "tipo_datos": "Tabular médico continuo y binario",
   "fecha_consulta": "2026-10-06",
-  "licencia": "Dominio Público / Open Access"
+  "licencia": "Dominio Público / Open Access",
+  "usado_por_script": false,
+  "nota": "El script R genera su propia población simulada en memoria para fines didácticos; este archivo no es leído por el script."
 }

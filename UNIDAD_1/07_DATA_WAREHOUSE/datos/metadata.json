@@ -7,5 +7,7 @@
   "numero_registros": 600,
   "tipo_datos": "Esquema relacional en estrella (Star Schema)",
   "fecha_consulta": "2026-10-06",
-  "licencia": "MIT Open License"
+  "licencia": "MIT Open License",
+  "usado_por_script": false,
+  "nota": "El script R genera su propia población simulada en memoria para fines didácticos; este archivo no es leído por el script."
 }
