@@ -37,8 +37,8 @@ for (k in 1:10) {
 }
 
 # Modelo final con k = 3
-k_optimo <- 3
-modelo_kmeans <- kmeans(datos_escalados, centers = k_optimo, nstart = 25)
+k_elegido <- 3
+modelo_kmeans <- kmeans(datos_escalados, centers = k_elegido, nstart = 25)
 
 # Cálculo de Coeficiente de Silueta para validar cohesión y separación
 library(cluster)
@@ -98,7 +98,7 @@ metricas_txt <- file.path(dir_res, "metricas_01.txt")
 writeLines(c(
   "=== MÉTRICAS DE RESULTADO - TEMA 01: MINERÍA DE DATOS ===",
   paste("Algoritmo:", "K-Means Particional"),
-  paste("Número de Clústeres (k):", k_optimo),
+  paste("Número de Clústeres (k):", k_elegido),
   paste("Varianza Explicada (BSS/TSS):", paste0(round((modelo_kmeans$betweenss / modelo_kmeans$totss) * 100, 2), "%")),
   paste("Coeficiente de Silueta Promedio:", round(sil_promedio, 4)),
   paste("Distribución por Clúster:", paste(modelo_kmeans$size, collapse = ", ")),
@@ -106,6 +106,22 @@ writeLines(c(
   "- El clúster 1 agrupa individuos con pétalos y sépalos reducidos (típicamente Setosa), perfectamente separable.",
   "- Los clústeres 2 y 3 representan individuos con morfologías intermedias y grandes, reflejando patrones naturales de diferenciación biológica sin supervisión humana."
 ), metricas_txt)
+
+# 7. EXPORTAR MÉTRICAS ESTRUCTURADAS (JSON)
+source("c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/ejemplos_R/utils_json.R")
+metricas_json_data <- list(
+  estado = "exitoso",
+  dataset = "iris",
+  archivos_graficos = c("grafico_01_mineria_datos.png"),
+  tecnica = "K-Means Particional",
+  k_elegido = k_elegido,
+  varianza_explicada = round((modelo_kmeans$betweenss / modelo_kmeans$totss) * 100, 2),
+  coeficiente_silueta = round(sil_promedio, 4),
+  distribucion_cluster = modelo_kmeans$size,
+  supera_baseline = NULL,
+  interpretacion = "El clúster 1 agrupa individuos con pétalos y sépalos reducidos (típicamente Setosa), perfectamente separable. Los clústeres 2 y 3 representan individuos con morfologías intermedias y grandes, reflejando patrones naturales de diferenciación biológica sin supervisión humana."
+)
+guardar_metricas_json(metricas_json_data, file.path(dir_res, "metricas.json"))
 
 
 cat(">>> [TEMA 01: MINERÍA DE DATOS] Ejecución completada exitosamente. Gráfica guardada en:", png_path1, "\n")

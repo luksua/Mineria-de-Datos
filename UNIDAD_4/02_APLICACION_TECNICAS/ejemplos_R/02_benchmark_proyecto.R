@@ -111,4 +111,30 @@ if (all(!ranking$Supera_Baseline)) {
 }
 sink()
 
+# EXPORTAR MÉTRICAS ESTRUCTURADAS (JSON)
+source("c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/ejemplos_R/utils_json.R")
+modelos_json <- lapply(lista_res, function(r) {
+  list(
+    modelo = r$Modelo,
+    exactitud = r$Exactitud_Test,
+    sensibilidad = r$Sensibilidad,
+    supera_baseline = r$Supera_Baseline,
+    solo_mayoritaria = r$Solo_Mayoritaria
+  )
+})
+metricas_json_data <- list(
+  estado = "exitoso",
+  dataset = "higher_education_dropout_sample_500",
+  archivos_graficos = c("grafico_02_benchmark_proyecto.png"),
+  n_total = n_total,
+  positivos_total = pos_total,
+  n_test = n_test,
+  positivos_test = pos_test,
+  baseline_mayoritaria = baseline_mayoritaria,
+  supera_baseline = any(ranking$Supera_Baseline),
+  modelos = modelos_json,
+  interpretacion = "Distribución de prueba con 147 casos negativos (98.0%) y 3 casos positivos (2.0%). Ningún modelo supera el baseline trivial de la clase mayoritaria (98.0%) y todos predicen únicamente la clase mayoritaria."
+)
+guardar_metricas_json(metricas_json_data, file.path(dir_res, "metricas.json"))
+
 cat('Benchmark de proyecto completado exitosamente.\n')

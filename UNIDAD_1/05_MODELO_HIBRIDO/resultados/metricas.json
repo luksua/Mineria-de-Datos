@@ -1,0 +1,16 @@
+{
+  "estado": "exitoso",
+  "dataset": "clasificacion_dos_regimenes_simulado",
+  "archivos_graficos": "grafico_05_modelos_hibridos.png",
+  "modelo_global": {
+    "tecnica": "Árbol CART Global Único",
+    "exactitud": 88.44
+  },
+  "modelo_hibrido": {
+    "tecnica": "Híbrido K-Means + Estimadores Locales",
+    "exactitud": 90.67
+  },
+  "mejora_absoluta": 2.22,
+  "supera_baseline": true,
+  "interpretacion": "Combina dos paradigmas ontológicos distintos: aprendizaje no supervisado (K-Means) para descomponer la heterogeneidad de la distribución, y aprendizaje supervisado para estimadores locales óptimos."
+}

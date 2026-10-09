@@ -153,4 +153,24 @@ writeLines(c(
   "2. Ventaja teórica: Rompe la maldición de la heterogeneidad de datos. Un modelo global único se ve obligado a promediar dinámicas divergentes, mientras que el modelo híbrido entrena estimadores locales óptimos para cada sub-régimen."
 ), metricas_txt)
 
+# EXPORTAR MÉTRICAS ESTRUCTURADAS (JSON)
+source("c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/ejemplos_R/utils_json.R")
+metricas_json_data <- list(
+  estado = "exitoso",
+  dataset = "clasificacion_dos_regimenes_simulado",
+  archivos_graficos = c("grafico_05_modelos_hibridos.png"),
+  modelo_global = list(
+    tecnica = "Árbol CART Global Único",
+    exactitud = round(acc_global * 100, 2)
+  ),
+  modelo_hibrido = list(
+    tecnica = "Híbrido K-Means + Estimadores Locales",
+    exactitud = round(acc_hibrido * 100, 2)
+  ),
+  mejora_absoluta = round((acc_hibrido - acc_global) * 100, 2),
+  supera_baseline = round(acc_hibrido, 4) > round(acc_global, 4),
+  interpretacion = "Combina dos paradigmas ontológicos distintos: aprendizaje no supervisado (K-Means) para descomponer la heterogeneidad de la distribución, y aprendizaje supervisado para estimadores locales óptimos."
+)
+guardar_metricas_json(metricas_json_data, file.path(dir_res, "metricas.json"))
+
 cat("\n>>> [TEMA 05: MODELOS HÍBRIDOS] Ejecución exitosa. Gráfica guardada en:", png_path1, "\n")

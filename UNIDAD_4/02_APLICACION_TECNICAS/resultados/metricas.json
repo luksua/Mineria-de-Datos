@@ -1,0 +1,35 @@
+{
+  "estado": "exitoso",
+  "dataset": "higher_education_dropout_sample_500",
+  "archivos_graficos": "grafico_02_benchmark_proyecto.png",
+  "n_total": 500,
+  "positivos_total": 5,
+  "n_test": 150,
+  "positivos_test": 3,
+  "baseline_mayoritaria": 98,
+  "supera_baseline": false,
+  "modelos": [
+    {
+      "modelo": "Regresión Logística",
+      "exactitud": 98,
+      "sensibilidad": 0,
+      "supera_baseline": false,
+      "solo_mayoritaria": true
+    },
+    {
+      "modelo": "Árbol CART",
+      "exactitud": 98,
+      "sensibilidad": 0,
+      "supera_baseline": false,
+      "solo_mayoritaria": true
+    },
+    {
+      "modelo": "Red Neuronal (MLP)",
+      "exactitud": 98,
+      "sensibilidad": 0,
+      "supera_baseline": false,
+      "solo_mayoritaria": true
+    }
+  ],
+  "interpretacion": "Distribución de prueba con 147 casos negativos (98.0%) y 3 casos positivos (2.0%). Ningún modelo supera el baseline trivial de la clase mayoritaria (98.0%) y todos predicen únicamente la clase mayoritaria."
+}

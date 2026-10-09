@@ -1,0 +1,12 @@
+{
+  "estado": "exitoso",
+  "dataset": "iris",
+  "archivos_graficos": "grafico_01_mineria_datos.png",
+  "tecnica": "K-Means Particional",
+  "k_elegido": 3,
+  "varianza_explicada": 76.7,
+  "coeficiente_silueta": 0.4599,
+  "distribucion_cluster": [53, 50, 47],
+  "supera_baseline": null,
+  "interpretacion": "El clúster 1 agrupa individuos con pétalos y sépalos reducidos (típicamente Setosa), perfectamente separable. Los clústeres 2 y 3 representan individuos con morfologías intermedias y grandes, reflejando patrones naturales de diferenciación biológica sin supervisión humana."
+}

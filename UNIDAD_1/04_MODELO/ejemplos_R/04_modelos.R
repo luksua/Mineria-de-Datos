@@ -177,4 +177,34 @@ writeLines(c(
   "- k-NN ofrece flexibilidad local pero es sensible a la escala dimensional y la elección de k."
 ), metricas_txt)
 
+# EXPORTAR MÉTRICAS ESTRUCTURADAS (JSON)
+source("c:/xampp/htdocs/api vehiculos tutoria/MINERIA_DATOS/ejemplos_R/utils_json.R")
+modelos_json <- lapply(1:nrow(tabla_comparativa), function(i) {
+  list(
+    modelo = as.character(tabla_comparativa$Modelo[i]),
+    accuracy = as.numeric(tabla_comparativa$Accuracy[i]),
+    precision = as.numeric(tabla_comparativa$Precision[i]),
+    recall_sensibilidad = as.numeric(tabla_comparativa$Recall_Sensibilidad[i]),
+    especificidad = as.numeric(tabla_comparativa$Especificidad[i]),
+    f1_score = as.numeric(tabla_comparativa$F1_Score[i])
+  )
+})
+metricas_json_data <- list(
+  estado = "exitoso",
+  dataset = "pima_diabetes_simulado",
+  archivos_graficos = c("grafico_04_modelos.png"),
+  mejor_modelo_accuracy = list(
+    modelo = as.character(tabla_comparativa$Modelo[which.max(tabla_comparativa$Accuracy)]),
+    accuracy = max(tabla_comparativa$Accuracy)
+  ),
+  mejor_modelo_f1 = list(
+    modelo = as.character(tabla_comparativa$Modelo[which.max(tabla_comparativa$F1_Score)]),
+    f1_score = max(tabla_comparativa$F1_Score)
+  ),
+  modelos = modelos_json,
+  supera_baseline = NULL,
+  interpretacion = "Regresión Logística y LDA obtienen métricas similares debido a la linealidad subyacente en el espacio logit. El Árbol CART provee alta explicabilidad clínica mediante reglas explícitas de corte en Glucosa y Edad. k-NN ofrece flexibilidad local pero es sensible a la escala dimensional y la elección de k."
+)
+guardar_metricas_json(metricas_json_data, file.path(dir_res, "metricas.json"))
+
 cat("\n>>> [TEMA 04: MODELOS] Ejecución exitosa. Gráfica guardada en:", png_path1, "\n")
