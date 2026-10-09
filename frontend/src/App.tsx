@@ -79,7 +79,9 @@ const MainContent: React.FC = () => {
   if (selectedTopic) {
     return (
       <main style={{ flex: 1, paddingBottom: '3rem' }}>
-        <TopicPage />
+        <div key={`topic-${selectedTopic.id}`} className="view-transition">
+          <TopicPage />
+        </div>
       </main>
     );
   }
@@ -88,25 +90,29 @@ const MainContent: React.FC = () => {
   if (activeView === 'uikit') {
     return (
       <main style={{ flex: 1, paddingBottom: '3rem' }}>
-        <UiKitView />
+        <div key="uikit" className="view-transition">
+          <UiKitView />
+        </div>
       </main>
     );
   }
 
   return (
     <main style={{ flex: 1, paddingBottom: '3rem' }}>
-      {/* Selector de Modo: La Máquina vs Modo Directo */}
+      {/* Selector de Modo: La Máquina vs Modo Directo con transición suave */}
       {mode === 'map' ? (
-        <MachinePlaceholder />
+        <div key="mode-machine" className="view-transition">
+          <MachinePlaceholder />
+        </div>
       ) : (
-        <>
+        <div key={`view-${activeView}`} className="view-transition">
           {activeView === 'dashboard' && <AcademicDashboard />}
           {activeView === 'units' && <UnitsExplorer />}
           {activeView === 'search' && <SearchEngine />}
           {activeView === 'latex' && <LatexLab />}
           {activeView === 'manual' && <InteractiveManual />}
           {activeView === 'profile' && <AcademicDashboard />}
-        </>
+        </div>
       )}
     </main>
   );

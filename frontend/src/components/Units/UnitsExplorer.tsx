@@ -43,10 +43,13 @@ export const UnitsExplorer: React.FC = () => {
   const encargoData = ENCARGOS_UNIDADES[unitNumber] || ENCARGOS_UNIDADES[1];
   const preguntaProblema = curriculumMap[unitNumber] || encargoData.preguntaProblema;
 
-  // Pestañas de Unidades
-  const unitTabs = course.unidades.map((u) => ({
+  const ZONE_NAMES = ['Biblioteca', 'Taller de Teoría', 'Laboratorio', 'Sala de Sustentación'];
+  const currentZoneName = ZONE_NAMES[unitNumber - 1] || 'Biblioteca';
+
+  // Pestañas de Unidades con nombre de zona
+  const unitTabs = course.unidades.map((u, idx) => ({
     id: u.id,
-    label: `Unidad ${u.numero}`,
+    label: `${ZONE_NAMES[idx] || `Unidad ${u.numero}`}`,
     badge: `${u.porcentajeApi}%`,
   }));
 
@@ -79,7 +82,7 @@ export const UnitsExplorer: React.FC = () => {
             Exploración Curricular
           </span>
           <h2 className="atlas-title" style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, margin: '0.2rem 0 0' }}>
-            Unidades de Minería de Datos
+            Zonas de Minería de Datos
           </h2>
         </div>
 
@@ -94,7 +97,7 @@ export const UnitsExplorer: React.FC = () => {
       {/* 2. Banner de Encargo de la Unidad (Pregunta Problema de narrativa.ts) */}
       <Banner
         variant="atlas"
-        titulo={`Unidad ${unitNumber}: ${encargoData.titulo}`}
+        titulo={`Zona ${unitNumber}: ${currentZoneName} — ${encargoData.titulo}`}
         subtitulo={encargoData.subtitulo}
         icono={<BookOpen size={24} />}
         metricaPrincipal={{

@@ -169,7 +169,7 @@ html, body {
   outline-offset: 2px;
 }
 
-/* Animaciones canónicas del Atlas */
+/* Animaciones canónicas del Atlas (Fase 4B: Vida Visual) */
 @keyframes topographicDrift {
   from { background-position: 0 0; }
   to { background-position: 320px 320px; }
@@ -177,10 +177,10 @@ html, body {
 
 @keyframes pinPulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(181, 83, 47, 0.45);
+    box-shadow: 0 0 0 0 rgba(181, 83, 47, 0.5);
   }
   70% {
-    box-shadow: 0 0 0 9px rgba(181, 83, 47, 0);
+    box-shadow: 0 0 0 10px rgba(181, 83, 47, 0);
   }
   100% {
     box-shadow: 0 0 0 0 rgba(181, 83, 47, 0);
@@ -193,7 +193,7 @@ html, body {
 }
 
 @keyframes dashTravel {
-  from { stroke-dashoffset: 120; }
+  from { stroke-dashoffset: 40; }
   to { stroke-dashoffset: 0; }
 }
 
@@ -213,7 +213,131 @@ html, body {
   }
 }
 
-/* Entrada escalonada y elevación sutil al hover de tarjetas (Fase 4.5) */
+@keyframes viewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.view-transition {
+  animation: viewFadeIn var(--motion-duration-normal) var(--motion-ease-out) both;
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Banner ticker continuo bajo la cabecera */
+.atlas-ticker-container {
+  width: 100%;
+  background-color: var(--color-card-muted);
+  border-bottom: 1px solid var(--color-border-light);
+  overflow: hidden;
+  position: relative;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.atlas-ticker-track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: tickerScroll 36s linear infinite;
+  will-change: transform;
+}
+
+.atlas-ticker-container:hover .atlas-ticker-track {
+  animation-play-state: paused;
+}
+
+.atlas-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 1.25rem;
+  font-size: var(--text-xs);
+  color: var(--color-ink-secondary);
+}
+
+.atlas-ticker-icon {
+  color: var(--color-terracotta);
+  display: inline-flex;
+  align-items: center;
+}
+
+.atlas-ticker-text {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.atlas-ticker-dot {
+  color: var(--color-border);
+  margin-left: 0.85rem;
+  font-size: 14px;
+}
+
+/* Punto viajero que recorre la ruta (RoutePath) */
+.route-traveler-track {
+  position: absolute;
+  top: 22px;
+  height: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.route-traveler-dot {
+  position: absolute;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-terracotta);
+  box-shadow: 0 0 6px rgba(181, 83, 47, 0.65);
+  animation: travelerSlide 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes travelerSlide {
+  0% { left: 0%; opacity: 0; transform: scale(0.6); }
+  8% { opacity: 1; transform: scale(1); }
+  92% { opacity: 1; transform: scale(1); }
+  100% { left: 100%; opacity: 0; transform: scale(0.6); }
+}
+
+/* Rejilla de métricas balanceada: sin tarjetas huérfanas (6x1, 3x2, 2x3 o 1x6) */
+.metrics-grid-balanced {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 1240px) {
+  .metrics-grid-balanced {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .metrics-grid-balanced {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 440px) {
+  .metrics-grid-balanced {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Entrada escalonada y elevación sutil al hover de tarjetas */
 .atlas-card {
   animation: cardEntrance var(--motion-duration-normal) var(--motion-ease-out) both;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
@@ -223,6 +347,20 @@ html, body {
   border-color: var(--color-border);
   box-shadow: var(--shadow-atlas-md);
   transform: translateY(-2px);
+}
+
+/* Retroalimentación en botones */
+.atlas-btn {
+  transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.atlas-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-atlas-sm);
+}
+
+.atlas-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
 }
 
 /* Respeto estricto a prefers-reduced-motion */
@@ -236,8 +374,15 @@ html, body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .atlas-card:hover {
+  .atlas-card:hover, .atlas-btn:hover, .atlas-btn:active {
     transform: none !important;
+  }
+  .atlas-ticker-track {
+    animation: none !important;
+    overflow-x: auto;
+  }
+  .route-traveler-dot {
+    display: none !important;
   }
 }
 

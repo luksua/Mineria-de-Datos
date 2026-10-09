@@ -95,21 +95,22 @@ export const Tabs: React.FC<TabsProps> = ({
             aria-selected={isActive}
             type="button"
             onClick={() => onChange(tab.id)}
+            className="atlas-tab-btn"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.45rem',
-              padding: '0.65rem 0.25rem',
+              padding: '0.65rem 0.35rem',
               fontSize: 'var(--text-sm)',
               fontWeight: isActive ? 700 : 500,
               color: isActive ? 'var(--color-terracotta)' : 'var(--color-ink-secondary)',
               backgroundColor: 'transparent',
               border: 'none',
-              borderBottom: isActive ? '2px solid var(--color-terracotta)' : '2px solid transparent',
               marginBottom: '-1px',
               cursor: 'pointer',
               transition: 'all var(--transition-fast)',
               whiteSpace: 'nowrap',
+              position: 'relative',
             }}
           >
             {tab.icon}
@@ -123,11 +124,26 @@ export const Tabs: React.FC<TabsProps> = ({
                   backgroundColor: isActive ? 'var(--color-terracotta-soft)' : 'var(--color-card-muted)',
                   color: isActive ? 'var(--color-terracotta)' : 'var(--color-ink-muted)',
                   border: '1px solid var(--color-border-light)',
+                  transition: 'all var(--transition-fast)',
                 }}
               >
                 {tab.badge}
               </span>
             )}
+            {/* Indicador deslizante inferior animado con scaleX */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '2px',
+                backgroundColor: 'var(--color-terracotta)',
+                transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
+                transformOrigin: 'center',
+                transition: 'transform 240ms var(--motion-ease-out)',
+              }}
+            />
           </button>
         );
       })}

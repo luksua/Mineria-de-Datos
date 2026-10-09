@@ -77,7 +77,7 @@ Revisa tú: que la tabla de endpoints coincida con tu API real, el estado de las
 - Entrega: `docs/fase2_reporte.md` y una prueba mínima que muestra el progreso real traído de `action=progress`.
 - Revisa tú: que ningún componente llame a la API directamente y que se haya hecho un commit antes de empezar.
 
-## Fase 3. Sistema de diseño y capa narrativa (NUEVA, antes de construir pantallas)
+## Fase 3. Sistema de diseño y capa narrativa — COMPLETADA
 
 - Qué hace: define y construye la base visual y el lenguaje del "RPG" **antes** de hacer las vistas, para no rehacerlas después.
   - Variables de diseño (colores, tipografía, espacios, bordes, sombras, movimiento) en un solo lugar.
@@ -88,12 +88,19 @@ Revisa tú: que la tabla de endpoints coincida con tu API real, el estado de las
 - Entrega: `docs/guia_estilo.md` y una página `/ui-kit` donde se ven todos los componentes en todos sus estados.
 - Revisa tú: **aquí apruebas la estética.** Si no te convence, se corrige antes de seguir. Dirección elegida: **atlas claro** (papel claro, tinta azul, acento terracota; paleta completa en `AGENTS.md`). La ruta se dibuja como camino con nodos, no como cuadrícula de tarjetas.
 
-## Fase 4. Modo Directo (con el sistema de diseño aplicado)
+## Fase 4. Modo Directo (con el sistema de diseño aplicado) — COMPLETADA
 
-- Qué hace: dashboard, las 4 unidades con su pregunta problema como "encargo", vista de tema, historial de las 100 consultas (solo lectura), documentos y matriz bibliográfica.
+- Qué hace: dashboard, las 4 unidades con su pregunta problema como "encargo", vista de tema (como página, no modal), historial de las 100 consultas (solo lectura; en Data Warehouse se distinguen las 5 adicionales), documentos y matriz bibliográfica con las columnas disponibles (la matriz completa llega con la brecha B8 en la Fase 5).
+- También: neutralizar `authService.ts` (quitar la llamada a `api/auth.php`, que no existe, y el respaldo con `usuario_actual.json`); en modo Máquina mostrar un aviso de "disponible en la Fase 6" en lugar del campus viejo; ocultar XP y nivel; el Laboratorio LaTeX y el Manual solo reciben ajuste mínimo de colores (su rediseño es la Fase 10).
 - Entrega: todas las unidades y temas abren con datos reales; las consultas aparecen con ID, fecha, idioma, estado y resultados.
 - Estética: tamaños de letra legibles, buen contraste, estados vacíos y tablas con filtros.
 - Revisa tú: que la plataforma ya sirva y se vea bien sin animaciones.
+
+## Fase 4B. Vida visual (NUEVA)
+
+- Qué hace: da movimiento y presencia al Modo Directo sin cambiar la paleta: entradas escalonadas, números que cuentan, ruta que se dibuja con punto viajero, un pulso, banner ticker con datos reales, transiciones entre vistas, textos sin jerga técnica y unidades diferenciadas.
+- Entrega: dashboard con vida; sin librerías nuevas; respeta `prefers-reduced-motion`.
+- Prompt listo en `prompts_fase4b_y_fase6.md`.
 
 ## Fase 5. Datos de avance, métricas e hitos
 
@@ -106,6 +113,10 @@ Revisa tú: que la tabla de endpoints coincida con tu API real, el estado de las
   - Reglas de hitos y rango calculadas desde el recorrido y las ejecuciones reales.
 - Entrega: cada tema muestra su estado real; el sistema sabe qué hitos se cumplieron.
 - Revisa tú: que `metricas.json` coincida con el `.txt` y que nada sea ficticio.
+
+> **Nota sobre la Fase 5 (ejecutada en versión reducida por la fecha de entrega).**
+> Hecho: curriculum alineado, caché con bypass tras `run_r`, scripts de la Unidad 1 con rutas internas, `metricas.json` común en U1-01, U1-04, U1-05 y U4-02, métricas reales y honestas en la Unidad 4, clasificación de los 24 datasets y README actualizado.
+> No hecho (pasa a la Fase 6 o se recorta): recorrido del usuario en `localStorage`, validación de acople (se hará en el frontend con `topic_data`), bitácora y matriz completas en la API (B8), hitos y rango (Fase 7).
 
 ## Fase 6. La Máquina (capa 1)
 
@@ -176,3 +187,14 @@ Revisa tú: que la tabla de endpoints coincida con tu API real, el estado de las
 
 Prioridad: **Fases 1 a 4** (base y diseño) → **6** (La Máquina) → **8 y 9** (Manim y Remotion, lo que pidió el profe) → **12** (sustentación) → **7, 11 y 10**.
 La Fase 3 no se recorta: cuesta poco y evita rehacer todo el diseño más tarde.
+
+---
+
+## Plan hasta la entrega (domingo 11 de octubre)
+
+- **Jueves:** Fase 4B (vida visual) y empezar la Fase 6.
+- **Viernes:** terminar la Fase 6; Atlas con **3 clips de Manim** (árbol, clústeres, red neuronal); **1 pieza de Remotion** (banner o intro corta).
+- **Sábado:** Duelo simple (con las métricas reales de U1-04), Modo sustentación sencillo, pruebas, `npm run build` y `git push` de respaldo.
+- **Domingo:** ensayo y entrega. Sin funciones nuevas.
+
+**Se recorta si falta tiempo:** video largo del manual (sustituir por demo en vivo o capturas), hitos y rango, rediseño del Laboratorio LaTeX y del Manual, Atlas completo, Remotion más allá de una pieza.

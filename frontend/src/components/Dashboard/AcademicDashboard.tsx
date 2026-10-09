@@ -19,8 +19,44 @@ import {
   Database,
   FileCode,
   ArrowRight,
+  Library,
+  Cpu,
+  FlaskConical,
+  GraduationCap,
 } from 'lucide-react';
 import type { UnitId } from '../../types/domain';
+
+// Zonas curriculares del Atlas de Conocimiento
+const ZONE_METADATA = [
+  {
+    zona: 'Zona 1: Biblioteca',
+    nombreCorto: 'Biblioteca',
+    subtitulo: 'Fundamentos, metodología y conceptos base de minería de datos',
+    icon: <Library size={20} />,
+    iconGrande: <Library size={26} />,
+  },
+  {
+    zona: 'Zona 2: Taller de Teoría',
+    nombreCorto: 'Taller de Teoría',
+    subtitulo: 'Modelos matemáticos, taxonomías y métodos algorítmicos',
+    icon: <Cpu size={20} />,
+    iconGrande: <Cpu size={26} />,
+  },
+  {
+    zona: 'Zona 3: Laboratorio',
+    nombreCorto: 'Laboratorio',
+    subtitulo: 'Experimentación aplicada con scripts de analítica en R',
+    icon: <FlaskConical size={20} />,
+    iconGrande: <FlaskConical size={26} />,
+  },
+  {
+    zona: 'Zona 4: Sala de Sustentación',
+    nombreCorto: 'Sala de Sustentación',
+    subtitulo: 'Integración, benchmark predictivo, informe LaTeX y sustentación',
+    icon: <GraduationCap size={20} />,
+    iconGrande: <GraduationCap size={26} />,
+  },
+];
 
 export const AcademicDashboard: React.FC = () => {
   const { course, setActiveView, openTopic } = useApp();
@@ -30,20 +66,23 @@ export const AcademicDashboard: React.FC = () => {
   // Animaciones de recuento numérico suave (useCountUp)
   const temasCount = useCountUp(m?.totalTemas ?? 24);
   const busquedasCount = useCountUp(m?.totalBusquedas ?? 360);
-  const docsCount = useCountUp(m?.documentosSeleccionados ?? 100);
+  const docsCount = useCountUp(m?.documentosSeleccionados ?? 127);
   const scriptsCount = useCountUp(m?.ejemplosR ?? 24);
-  const datasetsCount = useCountUp(m?.datasets ?? 24);
-  const latexCount = useCountUp(m?.documentosLatex ?? 24);
+  const datasetsCount = useCountUp(m?.datasets ?? 26);
+  const latexCount = useCountUp(m?.documentosLatex ?? 26);
   const globalPctCount = useCountUp(course?.porcentajeGlobalApi ?? 100);
 
-  // Nodos para RoutePath de las 4 unidades
-  const unitNodes: RouteNode[] = (course?.unidades || []).map((u, idx) => ({
-    id: u.id,
-    label: `Unidad ${idx + 1}`,
-    sublabel: u.nombre,
-    status: u.porcentajeApi >= 100 ? 'completado' : u.porcentajeApi > 0 ? 'actual' : 'pendiente',
-    icon: <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>U{idx + 1}</span>,
-  }));
+  // Nodos para RoutePath de las 4 unidades diferenciadas con íconos de zona
+  const unitNodes: RouteNode[] = (course?.unidades || []).map((u, idx) => {
+    const zone = ZONE_METADATA[idx] || ZONE_METADATA[0];
+    return {
+      id: u.id,
+      label: zone.nombreCorto,
+      sublabel: `Unidad ${idx + 1}: ${u.nombre}`,
+      status: u.porcentajeApi >= 100 ? 'completado' : u.porcentajeApi > 0 ? 'actual' : 'pendiente',
+      icon: zone.icon,
+    };
+  });
 
   const handleSelectUnit = (_unitId: string) => {
     setActiveView('units');
@@ -65,7 +104,7 @@ export const AcademicDashboard: React.FC = () => {
         variant="atlas"
         mostrarBrujula
         titulo="Plataforma de Investigación en Minería de Datos"
-        subtitulo="Modo Directo: Acceso estructurado a las 4 unidades académicas, 24 temas, ecuaciones booleanas verificadas, modelos reproducibles en R y artículos científicos en LaTeX."
+        subtitulo="Exploración estructurada del conocimiento: 4 zonas curriculares, 24 temas de estudio, ecuaciones booleanas verificadas, modelos reproducibles en R y documentación académica en LaTeX."
         icono={<Compass size={24} />}
         metricaPrincipal={{
           valor: m ? `${temasCount}/${m.totalTemas}` : '24/24',
@@ -73,29 +112,29 @@ export const AcademicDashboard: React.FC = () => {
         }}
         metricaSecundaria={{
           valor: `${globalPctCount}%`,
-          etiqueta: 'Progreso del Proyecto',
+          etiqueta: 'Progreso del Curso',
         }}
       >
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.75rem' }}>
-          <StatusBadge status="completado" label="Datos 100% Reales de Archivos" />
-          <StatusBadge status="completado" label="Scripts R Reproducibles" />
-          <StatusBadge status="actual" label="Modo Directo Activo" />
+          <StatusBadge status="completado" label="Evidencias Verificadas" />
+          <StatusBadge status="completado" label="Modelos en R Reproducibles" />
+          <StatusBadge status="actual" label="Navegación Académica" />
         </div>
       </Banner>
 
-      {/* 2. RoutePath con las 4 Unidades del Curriculum */}
+      {/* 2. RoutePath con las 4 Zonas Curriculares Diferenciadas */}
       <section style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '0.5rem' }}>
           <div>
             <h3 className="atlas-title" style={{ fontSize: 'var(--text-lg)', fontWeight: 700, margin: 0 }}>
               Ruta Curricular del Conocimiento
             </h3>
             <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-secondary)', margin: '0.2rem 0 0' }}>
-              Camino secuencial de las 4 unidades académicas. Haz clic en una unidad para explorar sus misiones.
+              Camino secuencial a través de las 4 zonas académicas. Selecciona una zona para explorar sus temas.
             </p>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setActiveView('units')}>
-            Ver todas las unidades <ArrowRight size={14} />
+            Explorar todas las zonas <ArrowRight size={14} />
           </Button>
         </div>
 
@@ -105,22 +144,18 @@ export const AcademicDashboard: React.FC = () => {
         />
       </section>
 
-      {/* 3. Panel de Métricas Cuantitativas Reales del Proyecto */}
+      {/* 3. Panel de Métricas Cuantitativas (Rejilla Balanceada 6x1 / 3x2 sin huérfanas) */}
       <section style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        <h3 className="atlas-title" style={{ fontSize: 'var(--text-lg)', fontWeight: 700, margin: 0 }}>
-          Métricas Reales del Proyecto (action=progress)
-        </h3>
-        <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-secondary)', margin: 0 }}>
-          Recuento exacto generado en tiempo real escaneando los archivos físicos del repositorio.
-        </p>
+        <div>
+          <h3 className="atlas-title" style={{ fontSize: 'var(--text-lg)', fontWeight: 700, margin: 0 }}>
+            Panel de Recursos y Evidencias
+          </h3>
+          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-secondary)', margin: '0.2rem 0 0' }}>
+            Consolidado de materiales y evidencias académicas catalogadas a lo largo del curso.
+          </p>
+        </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
-            gap: '1rem',
-          }}
-        >
+        <div className="metrics-grid-balanced">
           {/* Temas */}
           <Card padding="md" style={{ animationDelay: '0ms' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
@@ -148,11 +183,11 @@ export const AcademicDashboard: React.FC = () => {
               </div>
             </div>
             <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', marginTop: '0.65rem', borderTop: '1px solid var(--color-border-light)', paddingTop: '0.4rem' }}>
-              {m?.temasCompletadosApi ?? 24} verificados al 100%
+              Misiones temáticas del plan de estudio
             </div>
           </Card>
 
-          {/* Ecuaciones de Búsqueda con Rotulación Clara */}
+          {/* Ecuaciones de Búsqueda */}
           <Card padding="md" style={{ animationDelay: '60ms' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <div
@@ -174,12 +209,12 @@ export const AcademicDashboard: React.FC = () => {
                   {busquedasCount}
                 </div>
                 <div style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-ink-secondary)', marginTop: '0.25rem' }}>
-                  Ecuaciones del Proyecto (U1–U4)
+                  Ecuaciones de Búsqueda
                 </div>
               </div>
             </div>
             <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', marginTop: '0.65rem', borderTop: '1px solid var(--color-border-light)', paddingTop: '0.4rem' }}>
-              360 en total curricular (100 originales U1 + 5 DW + 255 U2–U4)
+              Consultas booleanas en bases científicas
             </div>
           </Card>
 
@@ -205,12 +240,12 @@ export const AcademicDashboard: React.FC = () => {
                   {docsCount}
                 </div>
                 <div style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-ink-secondary)', marginTop: '0.25rem' }}>
-                  Documentos y DOI
+                  Documentos y Referencias
                 </div>
               </div>
             </div>
             <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', marginTop: '0.65rem', borderTop: '1px solid var(--color-border-light)', paddingTop: '0.4rem' }}>
-              Indexados en matrices CSV
+              Artículos indexados con DOI y ficha
             </div>
           </Card>
 
@@ -241,7 +276,7 @@ export const AcademicDashboard: React.FC = () => {
               </div>
             </div>
             <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', marginTop: '0.65rem', borderTop: '1px solid var(--color-border-light)', paddingTop: '0.4rem' }}>
-              Ejecutables con Rscript
+              Algoritmos y modelos reproducibles
             </div>
           </Card>
 
@@ -267,12 +302,12 @@ export const AcademicDashboard: React.FC = () => {
                   {datasetsCount}
                 </div>
                 <div style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-ink-secondary)', marginTop: '0.25rem' }}>
-                  Datasets CSV
+                  Datasets Tabulares
                 </div>
               </div>
             </div>
             <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', marginTop: '0.65rem', borderTop: '1px solid var(--color-border-light)', paddingTop: '0.4rem' }}>
-              Públicos y referenciados
+              Bases de datos para experimentación
             </div>
           </Card>
 
@@ -298,100 +333,126 @@ export const AcademicDashboard: React.FC = () => {
                   {latexCount}
                 </div>
                 <div style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-ink-secondary)', marginTop: '0.25rem' }}>
-                  Capítulos LaTeX
+                  Capítulos en LaTeX
                 </div>
               </div>
             </div>
             <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', marginTop: '0.65rem', borderTop: '1px solid var(--color-border-light)', paddingTop: '0.4rem' }}>
-              Archivos .tex generados
+              Documentos formateados para sustentación
             </div>
           </Card>
         </div>
       </section>
 
-      {/* 4. Resumen de Unidades con Acceso Directo */}
+      {/* 4. Resumen de Unidades con Zonas Diferenciadas e Íconos Grandes */}
       <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <h3 className="atlas-title" style={{ fontSize: 'var(--text-lg)', fontWeight: 700, margin: 0 }}>
-          Unidades de Estudio
+          Zonas Académicas de Estudio
         </h3>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
-          {(course?.unidades || []).map((unit) => (
-            <Card
-              key={unit.id}
-              header={
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem' }}>
-                  <div>
-                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
-                      Unidad {unit.numero}
-                    </span>
-                    <h4 style={{ fontSize: 'var(--text-base)', fontWeight: 700, color: 'var(--color-ink)', margin: '0.15rem 0 0' }}>
-                      {unit.nombre}
-                    </h4>
+          {(course?.unidades || []).map((unit, idx) => {
+            const zone = ZONE_METADATA[idx] || ZONE_METADATA[0];
+
+            return (
+              <Card
+                key={unit.id}
+                header={
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div
+                        style={{
+                          width: '42px',
+                          height: '42px',
+                          borderRadius: 'var(--radius-sm)',
+                          backgroundColor: idx % 2 === 0 ? 'var(--color-blue-soft)' : 'var(--color-terracotta-soft)',
+                          color: idx % 2 === 0 ? 'var(--color-blue-ink)' : 'var(--color-terracotta)',
+                          border: `1px solid ${idx % 2 === 0 ? 'var(--color-blue-border)' : 'var(--color-terracotta-border)'}`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        {zone.iconGrande}
+                      </div>
+                      <div>
+                        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-terracotta)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                          {zone.zona}
+                        </span>
+                        <h4 style={{ fontSize: 'var(--text-base)', fontWeight: 700, color: 'var(--color-ink)', margin: '0.1rem 0 0' }}>
+                          {unit.nombre}
+                        </h4>
+                      </div>
+                    </div>
+                    <StatusBadge
+                      status={unit.porcentajeApi >= 100 ? 'completado' : 'actual'}
+                      size="sm"
+                    />
                   </div>
-                  <StatusBadge
-                    status={unit.porcentajeApi >= 100 ? 'completado' : 'actual'}
-                    size="sm"
-                  />
-                </div>
-              }
-              footer={
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-secondary)' }}>
-                    {unit.temas.length} temas temáticos
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setActiveView('units')}
-                  >
-                    Explorar Unidad <ArrowRight size={13} />
-                  </Button>
-                </div>
-              }
-            >
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-ink-secondary)', margin: 0, lineHeight: 1.45 }}>
-                  {unit.pregunta}
-                </p>
-                <ProgressBar
-                  percentage={unit.porcentajeApi}
-                  size="sm"
-                  variant="blue"
-                  label="Avance de evidencias"
-                />
-                {/* Temas rápidos */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginTop: '0.25rem' }}>
-                  {unit.temas.slice(0, 4).map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => openTopic(unit.id as UnitId, t.id)}
-                      style={{
-                        padding: '0.2rem 0.5rem',
-                        fontSize: '11px',
-                        backgroundColor: 'var(--color-card-muted)',
-                        border: '1px solid var(--color-border-light)',
-                        borderRadius: 'var(--radius-sm)',
-                        color: 'var(--color-blue-ink)',
-                        cursor: 'pointer',
-                      }}
-                      title={t.nombre}
-                    >
-                      {t.id.replace(/^\d+_/, '')}
-                    </button>
-                  ))}
-                  {unit.temas.length > 4 && (
-                    <span style={{ fontSize: '11px', color: 'var(--color-ink-muted)', alignSelf: 'center' }}>
-                      +{unit.temas.length - 4} más
+                }
+                footer={
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-secondary)' }}>
+                      {unit.temas.length} temas temáticos
                     </span>
-                  )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setActiveView('units')}
+                    >
+                      Explorar Zona <ArrowRight size={13} />
+                    </Button>
+                  </div>
+                }
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-ink-muted)', fontStyle: 'italic', margin: 0 }}>
+                    {zone.subtitulo}
+                  </p>
+                  <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-ink-secondary)', margin: 0, lineHeight: 1.45 }}>
+                    {unit.pregunta}
+                  </p>
+                  <ProgressBar
+                    percentage={unit.porcentajeApi}
+                    size="sm"
+                    variant="blue"
+                    label="Avance de evidencias"
+                  />
+                  {/* Temas rápidos */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginTop: '0.25rem' }}>
+                    {unit.temas.slice(0, 4).map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => openTopic(unit.id as UnitId, t.id)}
+                        style={{
+                          padding: '0.2rem 0.5rem',
+                          fontSize: '11px',
+                          backgroundColor: 'var(--color-card-muted)',
+                          border: '1px solid var(--color-border-light)',
+                          borderRadius: 'var(--radius-sm)',
+                          color: 'var(--color-blue-ink)',
+                          cursor: 'pointer',
+                        }}
+                        title={t.nombre}
+                      >
+                        {t.id.replace(/^\d+_/, '')}
+                      </button>
+                    ))}
+                    {unit.temas.length > 4 && (
+                      <span style={{ fontSize: '11px', color: 'var(--color-ink-muted)', alignSelf: 'center' }}>
+                        +{unit.temas.length - 4} más
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       </section>
     </div>
   );
 };
+

@@ -77,7 +77,21 @@ export const RoutePath: React.FC<RoutePathProps> = ({
             strokeWidth="2"
             strokeDasharray="4,4"
           />
-          {/* Línea trazada con animación stroke-dashoffset */}
+          {/* Línea punteada con flujo sutil continuo */}
+          <line
+            x1="0"
+            y1="3"
+            x2="100%"
+            y2="3"
+            stroke="var(--color-terracotta)"
+            strokeWidth="1.5"
+            strokeDasharray="4,8"
+            strokeOpacity="0.4"
+            style={{
+              animation: 'dashTravel 2.2s linear infinite',
+            }}
+          />
+          {/* Línea trazada al cargar con animación stroke-dashoffset */}
           <line
             x1="0"
             y1="3"
@@ -93,128 +107,153 @@ export const RoutePath: React.FC<RoutePathProps> = ({
           />
         </svg>
 
-        {nodes.map((node, index) => {
-          const isSelected = activeNodeId === node.id;
-          const isActual = node.status === 'actual';
+        {/* Punto viajero que recorre la ruta continuamente */}
+        <div
+          className="route-traveler-track"
+          aria-hidden="true"
+          style={{
+            left: `calc(100% / (${nodes.length} * 2))`,
+            width: `calc(100% - (100% / ${nodes.length}))`,
+          }}
+        >
+          <div className="route-traveler-dot" />
+        </div>
 
-          // Paleta semántica por estado según AGENTS.md §9
-          const nodeColorMap: Record<StatusType, { fill: string; stroke: string; text: string; bg: string }> = {
-            completado: {
-              fill: 'var(--color-blue-ink)',
-              stroke: 'var(--color-blue-ink)',
-              text: 'var(--color-blue-ink)',
-              bg: 'var(--color-blue-soft)',
-            },
-            actual: {
-              fill: 'var(--color-terracotta)',
-              stroke: 'var(--color-terracotta)',
-              text: 'var(--color-terracotta-dark)',
-              bg: 'var(--color-terracotta-soft)',
-            },
-            pendiente: {
-              fill: 'var(--color-card)',
-              stroke: 'var(--color-border)',
-              text: 'var(--color-ink-secondary)',
-              bg: 'var(--color-card-muted)',
-            },
-            bloqueado: {
-              fill: 'var(--color-card-muted)',
-              stroke: 'var(--color-border-disabled)',
-              text: 'var(--color-ink-disabled)',
-              bg: 'var(--color-paper)',
-            },
-          };
+        {(() => {
+          // Garantizar un único pin con pulso en toda la ruta
+          const pulsingNodeId = (() => {
+            const actualNode = nodes.find((n) => n.status === 'actual');
+            if (actualNode) return actualNode.id;
+            if (activeNodeId) return activeNodeId;
+            const completedNodes = nodes.filter((n) => n.status === 'completado');
+            if (completedNodes.length > 0) return completedNodes[completedNodes.length - 1].id;
+            return nodes[0]?.id;
+          })();
 
-          const colors = nodeColorMap[node.status];
+          return nodes.map((node, index) => {
+            const isSelected = activeNodeId === node.id;
+            const isPulsing = node.id === pulsingNodeId;
+            const isActual = node.status === 'actual';
 
-          return (
-            <div
-              key={node.id}
-              onClick={() => onSelectNode && onSelectNode(node.id)}
-              role={onSelectNode ? 'button' : undefined}
-              tabIndex={onSelectNode ? 0 : undefined}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textAlign: 'center',
-                zIndex: 2,
-                cursor: onSelectNode ? 'pointer' : 'default',
-                flex: 1,
-                maxWidth: '180px',
-                userSelect: 'none',
-                animation: 'cardEntrance var(--motion-duration-normal) var(--motion-ease-out) both',
-                animationDelay: `${index * 80}ms`,
-              }}
-            >
-              {/* Baliza / Pin del nodo (fondo sólido para tapar la línea de fondo de forma limpia) */}
+            // Paleta semántica por estado según AGENTS.md §9
+            const nodeColorMap: Record<StatusType, { fill: string; stroke: string; text: string; bg: string }> = {
+              completado: {
+                fill: 'var(--color-blue-ink)',
+                stroke: 'var(--color-blue-ink)',
+                text: 'var(--color-blue-ink)',
+                bg: 'var(--color-blue-soft)',
+              },
+              actual: {
+                fill: 'var(--color-terracotta)',
+                stroke: 'var(--color-terracotta)',
+                text: 'var(--color-terracotta-dark)',
+                bg: 'var(--color-terracotta-soft)',
+              },
+              pendiente: {
+                fill: 'var(--color-card)',
+                stroke: 'var(--color-border)',
+                text: 'var(--color-ink-secondary)',
+                bg: 'var(--color-card-muted)',
+              },
+              bloqueado: {
+                fill: 'var(--color-card-muted)',
+                stroke: 'var(--color-border-disabled)',
+                text: 'var(--color-ink-disabled)',
+                bg: 'var(--color-paper)',
+              },
+            };
+
+            const colors = nodeColorMap[node.status];
+
+            return (
               <div
+                key={node.id}
+                onClick={() => onSelectNode && onSelectNode(node.id)}
+                role={onSelectNode ? 'button' : undefined}
+                tabIndex={onSelectNode ? 0 : undefined}
                 style={{
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: 'var(--radius-full)',
-                  backgroundColor: colors.bg,
-                  border: `2px ${node.status === 'pendiente' ? 'dashed' : 'solid'} ${colors.stroke}`,
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  color: colors.text,
-                  fontWeight: 700,
-                  fontSize: 'var(--text-sm)',
-                  fontFamily: 'var(--font-mono)',
-                  boxShadow: isSelected
-                    ? '0 0 0 3px var(--color-terracotta-soft), var(--shadow-atlas-sm)'
-                    : 'var(--shadow-atlas-xs)',
-                  animation: isActual ? 'pinPulse 2.4s ease-in-out infinite' : undefined,
-                  transition: 'transform var(--transition-fast), border-color var(--transition-fast)',
-                  position: 'relative',
+                  textAlign: 'center',
+                  zIndex: 2,
+                  cursor: onSelectNode ? 'pointer' : 'default',
+                  flex: 1,
+                  maxWidth: '180px',
+                  userSelect: 'none',
+                  animation: 'cardEntrance var(--motion-duration-normal) var(--motion-ease-out) both',
+                  animationDelay: `${index * 80}ms`,
                 }}
               >
-                {node.icon || index + 1}
-
-                {/* Marcador de nodo seleccionado */}
-                {isSelected && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      bottom: '-5px',
-                      width: '7px',
-                      height: '7px',
-                      borderRadius: 'var(--radius-full)',
-                      backgroundColor: 'var(--color-terracotta)',
-                    }}
-                  />
-                )}
-              </div>
-
-              {/* Etiqueta del nodo (siempre debajo del pin, sin superposición de líneas) */}
-              <div style={{ marginTop: '0.65rem', padding: '0 0.25rem' }}>
+                {/* Baliza / Pin del nodo (fondo sólido para tapar la línea de fondo de forma limpia) */}
                 <div
                   style={{
-                    fontSize: 'var(--text-xs)',
-                    fontWeight: isActual || isSelected ? 800 : 700,
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: 'var(--radius-full)',
+                    backgroundColor: colors.bg,
+                    border: `2px ${node.status === 'pendiente' ? 'dashed' : 'solid'} ${colors.stroke}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     color: colors.text,
-                    lineHeight: 1.25,
+                    fontWeight: 700,
+                    fontSize: 'var(--text-sm)',
+                    fontFamily: 'var(--font-mono)',
+                    boxShadow: isSelected
+                      ? '0 0 0 3px var(--color-terracotta-soft), var(--shadow-atlas-sm)'
+                      : 'var(--shadow-atlas-xs)',
+                    animation: isPulsing ? 'pinPulse 2.4s ease-in-out infinite' : undefined,
+                    transition: 'transform var(--transition-fast), border-color var(--transition-fast)',
+                    position: 'relative',
                   }}
                 >
-                  {node.label}
+                  {node.icon || index + 1}
+
+                  {/* Marcador de nodo seleccionado */}
+                  {isSelected && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: '-5px',
+                        width: '7px',
+                        height: '7px',
+                        borderRadius: 'var(--radius-full)',
+                        backgroundColor: 'var(--color-terracotta)',
+                      }}
+                    />
+                  )}
                 </div>
-                {node.sublabel && (
+
+                {/* Etiqueta del nodo (siempre debajo del pin, sin superposición de líneas) */}
+                <div style={{ marginTop: '0.65rem', padding: '0 0.25rem' }}>
                   <div
                     style={{
-                      fontSize: '11px',
-                      color: 'var(--color-ink-muted)',
-                      marginTop: '0.15rem',
-                      lineHeight: 1.2,
+                      fontSize: 'var(--text-xs)',
+                      fontWeight: isActual || isSelected ? 800 : 700,
+                      color: colors.text,
+                      lineHeight: 1.25,
                     }}
                   >
-                    {node.sublabel}
+                    {node.label}
                   </div>
-                )}
+                  {node.sublabel && (
+                    <div
+                      style={{
+                        fontSize: '11px',
+                        color: 'var(--color-ink-muted)',
+                        marginTop: '0.15rem',
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {node.sublabel}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          });
+        })()}
       </div>
     </div>
   );

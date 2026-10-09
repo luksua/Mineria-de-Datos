@@ -10,6 +10,7 @@ import {
   Cog,
   Palette,
 } from 'lucide-react';
+import { AcademicTicker } from '../ui/AcademicTicker';
 
 export const Navbar: React.FC = () => {
   const { mode, setMode, activeView, setActiveView, closeTopic, selectedTopic } = useApp();
@@ -194,6 +195,7 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
       </div>
+      <AcademicTicker />
     </header>
   );
 };
