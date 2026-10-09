@@ -7,6 +7,7 @@ import { SearchEngine } from './components/Search/SearchEngine';
 import { LatexLab } from './components/Latex/LatexLab';
 import { InteractiveManual } from './components/Manual/InteractiveManual';
 import { MachinePlaceholder } from './components/Machine/MachinePlaceholder';
+import { MachineView } from './components/Machine/MachineView';
 import { TopicPage } from './pages/TopicPage';
 import { UiKitView } from './pages/UiKitView';
 import { AlertCircle, Loader2 } from 'lucide-react';
@@ -102,7 +103,7 @@ const MainContent: React.FC = () => {
       {/* Selector de Modo: La Máquina vs Modo Directo con transición suave */}
       {mode === 'map' ? (
         <div key="mode-machine" className="view-transition">
-          <MachinePlaceholder />
+          <MachineView />
         </div>
       ) : (
         <div key={`view-${activeView}`} className="view-transition">
