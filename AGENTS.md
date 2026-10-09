@@ -105,8 +105,8 @@ Estaciones y qué hacen (todas con acciones reales):
 - Dos niveles distintos: **estado del proyecto** (calculado desde archivos reales; hoy casi todo está completo) y **recorrido del usuario** (qué estaciones y temas operó en La Máquina; se guarda en el navegador y se puede reiniciar). Hitos y rango dependen del recorrido, no de que los archivos existan.
 - Estados de misión: Pendiente, En curso, Completada.
 - **Misión = tema:** tiene encargo (objetivo), pistas (documentos y clips), evidencias (resultados, gráficas, `.tex`) y estado.
-- **Hitos (logros) verificables:** cada uno con una regla de desbloqueo explícita basada en datos o archivos reales (por ejemplo: primer ejemplo R ejecutado, primer documento LaTeX generado, unidad completa, primer duelo de modelos, sustentación completada).
-- **Rango por unidades recorridas:** Explorador (0), Investigador (Unidad 1), Analista (Unidad 2), Científico de datos (Unidad 3), Maestro de minería de datos (Unidad 4). Una unidad se considera recorrida cuando el usuario operó en La Máquina las estaciones de todos sus temas. No se obtiene con clics ni con ejecuciones repetidas.
+- **Hitos (logros) verificables:** cada uno con una regla de desbloqueo explícita basada en datos o archivos reales (por ejemplo: primer ejemplo R ejecutado con éxito, primer documento LaTeX generado, unidad completa: laboratorio de todos sus temas operado con éxito, primer duelo de modelos, sustentación completada).
+- **Rango por unidades recorridas:** Explorador (0), Investigador (Unidad 1), Analista (Unidad 2), Científico de datos (Unidad 3), Maestro de minería de datos (Unidad 4). Una unidad se considera recorrida cuando el usuario operó en La Máquina la estación Laboratorio (script R con éxito) de todos sus temas. No se obtiene con clics ni con ejecuciones repetidas.
 - **Guía narrativa:** al entrar a una unidad, un breve briefing con su pregunta problema como "encargo".
 - **Avatar "operador":** marcador que se desliza a la estación elegida (viaje rápido). Sin movimiento libre en la primera versión.
 - No hay XP por ejecuciones automáticas. Si se quiere XP, se pide expresamente.
