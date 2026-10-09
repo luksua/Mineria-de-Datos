@@ -55,7 +55,7 @@ cat('GUÍA DE SUSTENTACIÓN Y DEFENSA DEL PROYECTO INTEGRADOR:\n\n')
 cat('1. Problema de Negocio / Académico:\n')
 cat('   Predicción temprana del abandono estudiantil en educación superior.\n\n')
 cat('2. Dataset del Proyecto:\n')
-cat(sprintf('   Muestra local analizada: %d observaciones con %d casos de abandono (dataset completo de UCI, ver ficha oficial).\n',
+cat(sprintf('   Muestra didáctica analizada: %d observaciones con %d casos de abandono (no se utilizó el dataset completo de UCI; ver ficha oficial para el benchmark formal).\n',
             n_total, pos_total))
 cat(sprintf('   Conjunto de prueba: %d observaciones con %d casos positivos (tasa test: %.1f%%).\n\n',
             n_test, pos_test, (pos_test / n_test) * 100))

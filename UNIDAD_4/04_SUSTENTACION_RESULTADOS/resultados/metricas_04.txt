@@ -4,7 +4,7 @@ GUÍA DE SUSTENTACIÓN Y DEFENSA DEL PROYECTO INTEGRADOR:
    Predicción temprana del abandono estudiantil en educación superior.
 
 2. Dataset del Proyecto:
-   Muestra local analizada: 500 observaciones con 5 casos de abandono (dataset completo de UCI, ver ficha oficial).
+   Muestra didáctica analizada: 500 observaciones con 5 casos de abandono (no se utilizó el dataset completo de UCI; ver ficha oficial para el benchmark formal).
    Conjunto de prueba: 150 observaciones con 3 casos positivos (tasa test: 2.0%).
 
 3. Metodología Aplicada:
