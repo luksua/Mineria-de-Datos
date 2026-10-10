@@ -3,16 +3,16 @@ import { useApp } from '../../context/AppContext';
 import { ENCARGOS_UNIDADES } from '../../data/narrativa';
 import { getCurriculum } from '../../services/unitService';
 import {
-  Card,
+  // Card,
   Banner,
   RoutePath,
   MissionCard,
   Tabs,
   StatusBadge,
-  Button,
+  // Button,
   type RouteNode,
 } from '../ui';
-import { BookOpen, Compass, ArrowRight } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import type { UnitId } from '../../types/domain';
 
 export const UnitsExplorer: React.FC = () => {

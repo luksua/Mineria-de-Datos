@@ -20,15 +20,15 @@ import {
 import { ESTACIONES_MAQUINA, ENCARGOS_UNIDADES } from '../data/narrativa';
 import {
   Compass,
-  Layers,
-  Sparkles,
+  // Layers,
+  // Sparkles,
   BookOpen,
   Terminal,
   Play,
   RotateCw,
-  Binary,
-  CheckCircle2,
-  Wind,
+  // Binary,
+  // CheckCircle2,
+  // Wind,
 } from 'lucide-react';
 
 export const UiKitView: React.FC = () => {

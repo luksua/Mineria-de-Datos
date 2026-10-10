@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { EmptyState, Card, StatusBadge, Button } from '../ui';
-import { Cog, Layers, ArrowRight } from 'lucide-react';
+import { EmptyState, Card, StatusBadge } from '../ui';
+import { Cog } from 'lucide-react';
 import { ESTACIONES_MAQUINA } from '../../data/narrativa';
 
 export const MachinePlaceholder: React.FC = () => {

@@ -23,13 +23,13 @@ import {
   BarChart2,
   FileCode,
   Play,
-  RotateCcw,
+  // RotateCcw,
   Copy,
   Download,
   ExternalLink,
   CheckCircle2,
   AlertCircle,
-  Table,
+  // Table,
 } from 'lucide-react';
 
 export const TopicPage: React.FC = () => {

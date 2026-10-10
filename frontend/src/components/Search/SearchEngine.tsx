@@ -14,7 +14,7 @@ import {
 import {
   Binary,
   ExternalLink,
-  BookOpen,
+  // BookOpen,
   Filter,
 } from 'lucide-react';
 

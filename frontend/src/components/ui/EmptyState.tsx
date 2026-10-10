@@ -3,11 +3,16 @@ import { Compass } from 'lucide-react';
 import { Button } from './Button';
 
 export interface EmptyStateProps {
-  titulo: string;
-  descripcion: string;
+  titulo?: string;
+  descripcion?: string;
+  title?: string;
+  description?: string;
   icono?: React.ReactNode;
+  icon?: React.ReactNode;
   accionTexto?: string;
+  actionText?: string;
   onAccion?: () => void;
+  onAction?: () => void;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -15,12 +20,23 @@ export interface EmptyStateProps {
 export const EmptyState: React.FC<EmptyStateProps> = ({
   titulo,
   descripcion,
+  title,
+  description,
   icono,
+  icon,
   accionTexto,
+  actionText,
   onAccion,
+  onAction,
   className = '',
   style,
 }) => {
+  const finalTitle = titulo || title || '';
+  const finalDescription = descripcion || description || '';
+  const finalIcon = icono || icon;
+  const finalActionText = accionTexto || actionText;
+  const finalOnAction = onAccion || onAction;
+
   return (
     <div
       className={`atlas-empty-state ${className}`}
@@ -53,7 +69,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           marginBottom: '1rem',
         }}
       >
-        {icono || <Compass size={28} />}
+        {finalIcon || <Compass size={28} />}
       </div>
 
       <h3
@@ -65,7 +81,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           marginBottom: '0.4rem',
         }}
       >
-        {titulo}
+        {finalTitle}
       </h3>
 
       <p
@@ -74,15 +90,15 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           color: 'var(--color-ink-secondary)',
           maxWidth: '420px',
           lineHeight: 1.5,
-          marginBottom: accionTexto ? '1.25rem' : 0,
+          marginBottom: finalActionText ? '1.25rem' : 0,
         }}
       >
-        {descripcion}
+        {finalDescription}
       </p>
 
-      {accionTexto && onAccion && (
-        <Button variant="outline" size="sm" onClick={onAccion}>
-          {accionTexto}
+      {finalActionText && finalOnAction && (
+        <Button variant="outline" size="sm" onClick={finalOnAction}>
+          {finalActionText}
         </Button>
       )}
     </div>
