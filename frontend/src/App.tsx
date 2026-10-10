@@ -6,7 +6,7 @@ import { UnitsExplorer } from './components/Units/UnitsExplorer';
 import { SearchEngine } from './components/Search/SearchEngine';
 import { LatexLab } from './components/Latex/LatexLab';
 import { InteractiveManual } from './components/Manual/InteractiveManual';
-import { MachinePlaceholder } from './components/Machine/MachinePlaceholder';
+// import { MachinePlaceholder } from './components/Machine/MachinePlaceholder';
 import { MachineView } from './components/Machine/MachineView';
 import { TopicPage } from './pages/TopicPage';
 import { UiKitView } from './pages/UiKitView';
@@ -80,7 +80,7 @@ const MainContent: React.FC = () => {
   if (selectedTopic) {
     return (
       <main style={{ flex: 1, paddingBottom: '3rem' }}>
-        <div key={`topic-${selectedTopic.id}`} className="view-transition">
+        <div key={`topic-${selectedTopic.unitId}-${selectedTopic.topicId}`} className="view-transition">
           <TopicPage />
         </div>
       </main>

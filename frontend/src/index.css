@@ -434,7 +434,7 @@ html, body {
   overflow-x: auto;
 }
 
-/* Animaciones de La Máquina de Minería (Fase 6B) */
+/* Animaciones de La Máquina de Minería (Fase 6B y 6C) */
 @keyframes stationLightUp {
   0% {
     box-shadow: 0 0 0 0 rgba(31, 58, 95, 0.6);
@@ -469,4 +469,121 @@ html, body {
   background-color: var(--color-terracotta-soft) !important;
   box-shadow: 0 0 10px rgba(181, 83, 47, 0.25) !important;
 }
+
+/* Entrega 6C: Banda Transportadora, Lámparas, Piezas y Drawer */
+@keyframes conveyorFlow {
+  from { background-position: 0 0; }
+  to { background-position: 36px 0; }
+}
+
+.conveyor-belt-track {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(217, 207, 187, 0.45) 0,
+    rgba(217, 207, 187, 0.45) 8px,
+    transparent 8px,
+    transparent 18px
+  );
+  background-size: 36px 36px;
+  animation: conveyorFlow 1.8s linear infinite;
+}
+
+@keyframes stationLampPulse {
+  0%, 100% {
+    opacity: 0.85;
+    transform: scale(1);
+    box-shadow: 0 0 6px rgba(181, 83, 47, 0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+    box-shadow: 0 0 14px rgba(181, 83, 47, 0.85);
+  }
+}
+
+.station-lamp-active {
+  animation: stationLampPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes stationLampProcessing {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(0.95);
+    box-shadow: 0 0 8px rgba(181, 83, 47, 0.6);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+    box-shadow: 0 0 20px rgba(181, 83, 47, 1);
+  }
+}
+
+.station-lamp-processing {
+  animation: stationLampProcessing 0.6s ease-in-out infinite;
+}
+
+@keyframes pieceRejectBounce {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-12px); }
+  40%, 80% { transform: translateX(12px); }
+}
+
+.piece-reject {
+  animation: pieceRejectBounce 0.48s ease-in-out both;
+  border-color: var(--color-danger-ink) !important;
+  box-shadow: 0 0 12px rgba(153, 35, 35, 0.4) !important;
+}
+
+@keyframes drawerSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.drawer-slide-in {
+  animation: drawerSlideIn 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes gearRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.gear-active {
+  animation: gearRotate 4s linear infinite;
+  transform-origin: center;
+}
+
+/* Modo Presentación Tipografía Grande */
+.presentation-container {
+  font-size: 1.125rem;
+}
+
+.presentation-container h1,
+.presentation-container h2,
+.presentation-container h3 {
+  letter-spacing: -0.01em;
+}
+
+/* Respeta prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .conveyor-belt-track {
+    animation: none !important;
+  }
+  .station-lamp-active,
+  .station-lamp-processing,
+  .gear-active,
+  .piece-reject {
+    animation: none !important;
+  }
+  .drawer-slide-in {
+    animation: none !important;
+  }
+}
+
 
